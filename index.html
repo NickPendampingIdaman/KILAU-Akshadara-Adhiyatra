@@ -10,7 +10,7 @@
   <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&family=Playfair+Display:ital,wght@0,600;0,700;1,400&display=swap" rel="stylesheet">
   
   <style>
-    /* Theme Variables */
+    /* Design Tokens */
     :root {
       --color-primary-blue: #0056B3;
       --color-blue-dark: #002D62;
@@ -20,6 +20,9 @@
       --color-card-bg: #FFFFFF;
       --color-text-main: #002D62;
       --color-white-text: #FFFFFF;
+
+      --color-brand-bg: transparent;
+      --logo-glow: none;
 
       --font-serif: 'Playfair Display', Georgia, serif;
       --font-sans: 'Inter', -apple-system, BlinkMacSystemFont, sans-serif;
@@ -39,11 +42,15 @@
       --color-primary-blue: #5865F2;
       --color-blue-light: #35373C;
       --color-blue-dark: #1E1F22;
+
+      --color-brand-bg: #2B2D31;
+      --logo-glow: drop-shadow(0px 0px 10px rgba(255, 255, 255, 0.35));
+
       --shadow-pill: rgba(0, 0, 0, 0.25) 0px 4px 15px 0px;
       --shadow-pill-hover: rgba(88, 101, 242, 0.3) 0px 6px 20px 0px;
     }
 
-    /* Base Reset */
+    /* Reset */
     * {
       box-sizing: border-box;
       margin: 0;
@@ -63,7 +70,7 @@
       transition: background-color 0.3s ease, color 0.3s ease;
     }
 
-    /* Fixed Top Ticker */
+    /* Top Marquee */
     .marquee-container {
       width: 100%;
       background-color: var(--color-primary-blue);
@@ -102,7 +109,7 @@
       100% { transform: translateX(-50%); }
     }
 
-    /* Layout Structural Framework */
+    /* Sidebar & Layout */
     .app-layout {
       display: flex;
       margin-top: var(--marquee-height);
@@ -120,19 +127,21 @@
       left: 0;
       display: flex;
       flex-direction: column;
-      padding: 0.25rem 1rem 2rem 1rem;
+      padding: 0;
       z-index: 100;
       overflow-y: auto;
       transition: background-color 0.3s ease;
     }
 
     .sidebar-brand {
+      width: 100%;
+      background-color: var(--color-brand-bg);
+      padding: 1rem 0.5rem 0.25rem 0.5rem;
       display: flex;
       justify-content: center;
       align-items: center;
-      width: 100%;
-      margin-bottom: 0.25rem;
-      padding: 0;
+      border: none;
+      transition: background-color 0.3s ease;
     }
 
     .sidebar-logo {
@@ -141,12 +150,15 @@
       width: auto;
       object-fit: contain;
       display: block;
+      filter: var(--logo-glow);
+      transition: filter 0.3s ease;
     }
 
     .sidebar-nav {
       display: flex;
       flex-direction: column;
       gap: 0.5rem;
+      padding: 0.25rem 1rem 1rem 1rem;
     }
 
     .sidebar-label {
@@ -182,6 +194,7 @@
       width: 100%;
     }
 
+    /* Main Content */
     .program-header {
       border-bottom: 2px solid var(--color-blue-border);
       padding-bottom: 2rem;
@@ -214,7 +227,6 @@
       opacity: 0.9;
     }
 
-    /* Content Modules */
     .section-title {
       font-family: var(--font-serif);
       font-size: 1.8rem;
@@ -257,7 +269,7 @@
       gap: 0.85rem;
     }
 
-    /* Component Controls */
+    /* Controls */
     .btn-pill {
       display: inline-flex;
       align-items: center;
@@ -300,7 +312,6 @@
       border-color: var(--color-primary-blue);
     }
 
-    /* Fixed Floating Widget */
     .dark-mode-widget {
       position: fixed;
       bottom: 1.5rem;
@@ -346,7 +357,7 @@
       opacity: 0.8;
     }
 
-    /* Responsive Breakpoints */
+    /* Responsive */
     @media (max-width: 1024px) {
       :root {
         --sidebar-width: 200px;
@@ -396,7 +407,7 @@
         width: 100%;
         overflow-x: auto;
         gap: 0.25rem;
-        padding-bottom: 0;
+        padding: 0;
         -webkit-overflow-scrolling: touch;
       }
 
@@ -481,32 +492,32 @@
           <section class="grade-group">
             <h3 class="grade-header">Grade X (Kelas 10)</h3>
             <div class="resources-grid">
-              <a href="https://drive.google.com/drive/folders/1nVXypVt0hIh72-dO2s0eDrcYnoP25M5w?usp=sharing" class="btn-pill btn-pill-primary">Semester 1 Midterm (ATS)</a>
-              <a href="https://drive.google.com/drive/folders/1TCXvcNLPOX8fO9UJ2wXh2UxxekpVT51Q?usp=sharing" class="btn-pill btn-pill-primary">Semester 1 Final (AAS)</a>
-              <a href="https://drive.google.com/drive/folders/1k3_ECHcQ6TI3ny8DzCJaLHBaDyr30ieb?usp=sharing" class="btn-pill btn-pill-secondary">Semester 2 Midterm (ATS)</a>
-              <a href="https://drive.google.com/drive/folders/1K1LJwHyNs_bT7hiKJpL5_hCLsZQysAmN?usp=sharing" class="btn-pill btn-pill-secondary">Semester 2 Final (AAT)</a>
-              <a href="#" class="btn-pill btn-pill-secondary">Curriculum Guide &amp; Rubrics</a>
+              <a href="https://drive.google.com/drive/folders/1nVXypVt0hIh72-dO2s0eDrcYnoP25M5w?usp=sharing" class="btn-pill btn-pill-primary" target="_blank" rel="noopener noreferrer">Semester 1 Midterm (ATS)</a>
+              <a href="https://drive.google.com/drive/folders/1TCXvcNLPOX8fO9UJ2wXh2UxxekpVT51Q?usp=sharing" class="btn-pill btn-pill-primary" target="_blank" rel="noopener noreferrer">Semester 1 Final (AAS)</a>
+              <a href="https://drive.google.com/drive/folders/1k3_ECHcQ6TI3ny8DzCJaLHBaDyr30ieb?usp=sharing" class="btn-pill btn-pill-secondary" target="_blank" rel="noopener noreferrer">Semester 2 Midterm (ATS)</a>
+              <a href="https://drive.google.com/drive/folders/1K1LJwHyNs_bT7hiKJpL5_hCLsZQysAmN?usp=sharing" class="btn-pill btn-pill-secondary" target="_blank" rel="noopener noreferrer">Semester 2 Final (AAT)</a>
+              <a href="#" class="btn-pill btn-pill-secondary" target="_blank" rel="noopener noreferrer">Curriculum Guide &amp; Rubrics</a>
             </div>
           </section>
 
           <section class="grade-group">
             <h3 class="grade-header">Grade XI (Kelas 11)</h3>
             <div class="resources-grid">
-              <a href="https://drive.google.com/drive/folders/1Uv7UwU4rWedyktKJDx7-ki5JUxJQZ7q3?usp=drive_link" class="btn-pill btn-pill-primary">Semester 1 Midterm (ATS)</a>
-              <a href="https://drive.google.com/drive/folders/1k3BIHhQ655ToDGgcWHQjnzKmH0zI-Az9?usp=sharing" class="btn-pill btn-pill-primary">Semester 1 Final (AAS)</a>
-              <a href="https://drive.google.com/drive/folders/1hxXo3qcERz7N5f-uqvxJU3a0A4n76uML?usp=drive_link" class="btn-pill btn-pill-secondary">Semester 2 Midterm (ATS)</a>
-              <a href="https://drive.google.com/drive/folders/11LwSpvaeF6GGqzIv9yuKsSJfD2C146NZ?usp=sharing" class="btn-pill btn-pill-secondary">Semester 2 Final (AAT)</a>
-              <a href="#" class="btn-pill btn-pill-secondary">Practicum &amp; Lab Guidelines</a>
+              <a href="https://drive.google.com/drive/folders/1Uv7UwU4rWedyktKJDx7-ki5JUxJQZ7q3?usp=drive_link" class="btn-pill btn-pill-primary" target="_blank" rel="noopener noreferrer">Semester 1 Midterm (ATS)</a>
+              <a href="https://drive.google.com/drive/folders/1k3BIHhQ655ToDGgcWHQjnzKmH0zI-Az9?usp=sharing" class="btn-pill btn-pill-primary" target="_blank" rel="noopener noreferrer">Semester 1 Final (AAS)</a>
+              <a href="https://drive.google.com/drive/folders/1hxXo3qcERz7N5f-uqvxJU3a0A4n76uML?usp=drive_link" class="btn-pill btn-pill-secondary" target="_blank" rel="noopener noreferrer">Semester 2 Midterm (ATS)</a>
+              <a href="https://drive.google.com/drive/folders/11LwSpvaeF6GGqzIv9yuKsSJfD2C146NZ?usp=sharing" class="btn-pill btn-pill-secondary" target="_blank" rel="noopener noreferrer">Semester 2 Final (AAT)</a>
+              <a href="#" class="btn-pill btn-pill-secondary" target="_blank" rel="noopener noreferrer">Practicum &amp; Lab Guidelines</a>
             </div>
           </section>
 
           <section class="grade-group">
             <h3 class="grade-header">Grade XII (Kelas 12)</h3>
             <div class="resources-grid">
-              <a href="#" class="btn-pill btn-pill-primary">Semester 1 Midterm (ATS)</a>
-              <a href="#" class="btn-pill btn-pill-primary">Semester 1 Final (AAS)</a>
-              <a href="#" class="btn-pill btn-pill-primary">School Examination (US)</a>
-              <a href="#" class="btn-pill btn-pill-secondary">College Preparation Modules</a>
+              <a href="#" class="btn-pill btn-pill-primary" target="_blank" rel="noopener noreferrer">Semester 1 Midterm (ATS)</a>
+              <a href="#" class="btn-pill btn-pill-primary" target="_blank" rel="noopener noreferrer">Semester 1 Final (AAS)</a>
+              <a href="#" class="btn-pill btn-pill-primary" target="_blank" rel="noopener noreferrer">School Examination (US)</a>
+              <a href="#" class="btn-pill btn-pill-secondary" target="_blank" rel="noopener noreferrer">College Preparation Modules</a>
             </div>
           </section>
         </main>
@@ -528,7 +539,7 @@
   </div>
 
   <script>
-    /* Theme Toggle Event Listener */
+    /* Dark Mode Toggle */
     const darkModeBtn = document.getElementById('darkModeBtn');
     const darkModeText = document.getElementById('darkModeText');
 

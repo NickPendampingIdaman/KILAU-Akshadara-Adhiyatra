@@ -1,1 +1,0 @@
-# KILAU-Akshadara-Adhiyatra

@@ -1,0 +1,269 @@
+<!DOCTYPE html>
+<html lang="id">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>KILAU — Kilas Informasi Akademik Terpadu</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700;800&family=Playfair+Display:wght@600;700&display=swap" rel="stylesheet">
+<style>
+:root{
+  --blue:#0056B3;
+  --blue-dark:#002D62;
+  --blue-soft:#EBF3FA;
+  --border:#C9D9EA;
+  --bg:#F4F7FA;
+  --card:#FFFFFF;
+  --text:#002D62;
+  --muted:#66788A;
+  --green:#2E8B57;
+  --green-soft:#E7F6EC;
+  --gold:#E3A23B;
+  --gold-soft:#FFF2D8;
+  --input-bg:#F4F7FA;
+  --hover:#F7FAFD;
+  --shadow:0 4px 16px rgba(0,45,98,.05);
+  --board-bg:#002D62;
+  --board-text:#FFFFFF;
+  --board-muted:#C6D5E7;
+  --board-item:rgba(255,255,255,.07);
+  --board-border:rgba(255,255,255,.12);
+  --radius:14px;
+  --sidebar:260px;
+}
+body.dark-mode{
+  --blue:#5865F2;
+  --blue-dark:#1E1F22;
+  --blue-soft:#35373C;
+  --border:#1E1F22;
+  --bg:#313338;
+  --card:#2B2D31;
+  --text:#F2F3F5;
+  --muted:#B5BAC1;
+  --green:#57F287;
+  --green-soft:#193B2A;
+  --gold:#F3BC5F;
+  --gold-soft:#3B3020;
+  --input-bg:#232428;
+  --hover:#35373C;
+  --shadow:0 4px 16px rgba(0,0,0,.25);
+  --board-bg:#1E1F22;
+  --board-text:#F2F3F5;
+  --board-muted:#B5BAC1;
+  --board-item:rgba(255,255,255,.06);
+  --board-border:rgba(255,255,255,.12);
+}
+*{box-sizing:border-box}
+html{scroll-behavior:smooth}
+body{margin:0;background:var(--bg);color:var(--text);font-family:'Inter',sans-serif;-webkit-font-smoothing:antialiased;transition:background-color .25s ease,color .25s ease}
+a{text-decoration:none;color:inherit}
+button,input{font:inherit}
+
+/* TOP BAR */
+.marquee{height:38px;background:var(--blue);color:white;overflow:hidden;white-space:nowrap;border-bottom:2px solid #8BB8E8;position:fixed;top:0;left:0;width:100%;z-index:1000}
+.marquee-track{display:inline-block;padding:9px 0;font-size:12px;font-weight:700;letter-spacing:.12em;text-transform:uppercase;animation:marquee 26s linear infinite}
+.marquee-track span{margin-right:48px}
+@keyframes marquee{from{transform:translateX(0)}to{transform:translateX(-50%)}}
+
+.layout{display:flex;padding-top:38px;min-height:100vh}
+.sidebar{width:var(--sidebar);height:calc(100vh - 38px);position:fixed;left:0;top:38px;background:var(--card);border-right:1px solid var(--border);padding:22px 16px;display:flex;flex-direction:column;overflow-y:auto;z-index:100}
+.brand{display:flex;align-items:center;gap:11px;padding:4px 8px 22px}
+.brand-mark{width:46px;height:46px;border-radius:12px;background:var(--blue-soft);display:grid;place-items:center;overflow:hidden;flex:none}
+.brand-mark img{width:100%;height:100%;object-fit:contain;padding:5px}
+.brand h1{font-family:'Playfair Display',serif;font-size:22px;line-height:1;margin:0}
+.brand p{font-size:10px;margin:4px 0 0;color:var(--muted);font-weight:700;letter-spacing:.08em;text-transform:uppercase}
+.search-box{display:flex;align-items:center;gap:8px;padding:10px 11px;border:1px solid var(--border);background:var(--input-bg);border-radius:10px;margin:0 4px 14px}
+.search-box:focus-within{border-color:var(--blue);box-shadow:0 0 0 3px rgba(0,86,179,.09)}
+.search-box svg{width:16px;height:16px;color:var(--muted);flex:none}
+.search-box input{border:0;outline:0;background:transparent;width:100%;font-size:13px;color:var(--text)}
+.nav{display:flex;flex-direction:column;gap:4px}
+.nav a{display:flex;align-items:center;gap:10px;padding:10px 11px;border-radius:9px;color:var(--muted);font-size:14px;font-weight:650}
+.nav a svg{width:17px;height:17px;flex:none}
+.nav a:hover{background:var(--hover);color:var(--blue)}
+.nav a.active{background:var(--blue-soft);color:var(--blue)}
+.nav-label{margin:18px 11px 7px;font-size:10px;color:#93A1B2;font-weight:800;letter-spacing:.1em;text-transform:uppercase}
+.side-mini{background:var(--gold-soft);border:1px solid var(--gold);border-radius:12px;padding:12px}
+.theme-switch{display:flex;align-items:center;justify-content:space-between;gap:10px;margin:14px 4px 12px;padding:9px 11px;border:1px solid var(--border);background:var(--input-bg);border-radius:10px;color:var(--text);font-size:12px;font-weight:700}.theme-switch button{width:32px;height:32px;border:1px solid var(--border);border-radius:9px;background:var(--card);color:var(--text);display:grid;place-items:center;cursor:pointer;transition:.2s ease}.theme-switch button:hover{background:var(--hover);color:var(--blue)}.theme-switch svg{width:16px;height:16px;fill:currentColor}.theme-label{display:flex;align-items:center;gap:8px}.theme-label svg{width:15px;height:15px}
+.side-mini strong{display:block;font-size:12px;margin-bottom:7px}
+.side-mini div{font-size:11px;color:var(--muted);margin-top:5px}
+
+.main{margin-left:var(--sidebar);width:calc(100% - var(--sidebar));padding:42px 28px 64px}
+.page{max-width:1100px;margin:0 auto}
+.header{padding-bottom:28px;border-bottom:2px solid var(--border)}
+.eyebrow{font-size:12px;font-weight:800;letter-spacing:.14em;text-transform:uppercase;color:var(--blue);margin-bottom:8px}
+.header h2{font-family:'Playfair Display',serif;font-size:58px;line-height:1.04;margin:0 0 12px;letter-spacing:-.025em}
+.header p{max-width:760px;color:var(--muted);font-size:16px;line-height:1.7;margin:0}
+.section-title{font-family:'Playfair Display',serif;font-size:29px;margin:34px 0 18px;display:flex;align-items:center;gap:12px}
+.section-title:after{content:"";height:1px;background:var(--border);flex:1}
+
+.grade-card{background:var(--card);border:1px solid var(--border);border-radius:var(--radius);padding:22px;margin-bottom:18px;box-shadow:var(--shadow)}
+.grade-head{display:flex;align-items:center;justify-content:space-between;gap:16px;margin-bottom:18px}
+.grade-title{display:flex;align-items:center;gap:12px}
+.grade-icon{width:42px;height:42px;border-radius:11px;background:var(--blue-soft);color:var(--blue);display:grid;place-items:center;flex:none}
+.grade-icon svg{width:22px;height:22px}
+.grade-title h3{margin:0;font-size:16px;color:var(--blue);text-transform:uppercase;letter-spacing:.04em}
+.grade-title p{margin:3px 0 0;font-size:12px;color:var(--muted)}
+.active-badge{display:inline-flex;align-items:center;gap:6px;background:var(--green-soft);color:var(--green);padding:5px 10px;border-radius:999px;font-size:11px;font-weight:800;white-space:nowrap}
+.active-badge:before{content:"";width:6px;height:6px;background:var(--green);border-radius:50%}
+.resources{display:flex;flex-wrap:wrap;gap:10px}
+.file-link{position:relative;display:inline-flex;align-items:center;gap:8px;padding:10px 14px 10px 11px;border-radius:999px;border:1.5px solid var(--border);background:var(--card);color:var(--blue);font-size:13px;font-weight:700;transition:.18s ease}
+.file-link svg{width:16px;height:16px;flex:none}
+.file-link:hover{transform:translateY(-2px);border-color:var(--blue);background:var(--blue-soft);box-shadow:0 5px 16px rgba(0,45,98,.08)}
+.file-link.primary{background:var(--blue);color:#fff;border-color:var(--blue)}
+.file-link.primary:hover{background:var(--blue-dark);border-color:var(--blue-dark)}
+.new-badge{position:absolute;right:-5px;top:-8px;background:var(--gold);color:#fff;border-radius:999px;padding:2px 6px;font-size:8px;font-weight:800;letter-spacing:.04em;box-shadow:0 2px 6px rgba(0,0,0,.12)}
+.updated{width:100%;font-size:11px;color:#93A1B2;margin-top:2px;font-weight:600}
+
+.board{margin-top:38px;background:var(--board-bg);color:var(--board-text);border-radius:16px;padding:26px;display:grid;grid-template-columns:260px 1fr;gap:24px;overflow:hidden;position:relative}
+.board:after{content:"";position:absolute;width:250px;height:250px;border-radius:50%;right:-90px;top:-110px;background:radial-gradient(circle,rgba(227,162,59,.28),transparent 70%)}
+.board-copy,.board-list{position:relative;z-index:1}
+.board-copy .eyebrow{color:#F3BC5F;margin-bottom:7px}
+.board-copy h3{font-family:'Playfair Display',serif;font-size:26px;line-height:1.12;margin:0 0 8px}
+.board-copy p{margin:0;color:var(--board-muted);font-size:12px;line-height:1.6}
+.board-list{display:grid;grid-template-columns:repeat(4,1fr);gap:10px}
+.board-item{background:var(--board-item);border:1px solid var(--board-border);border-radius:11px;padding:13px;text-align:center}
+.rank{width:28px;height:28px;border-radius:50%;margin:0 auto 7px;display:grid;place-items:center;background:var(--gold);color:var(--blue-dark);font-size:12px;font-weight:800}
+.board-item:nth-child(2) .rank{background:#D8E1EA}.board-item:nth-child(3) .rank{background:#CB8C4D}
+.board-item .name{font-size:12px;font-weight:750}.board-item .count{font-size:10px;color:#AFC2D8;margin-top:2px}
+
+.footer{margin-top:42px;padding-top:22px;border-top:1px solid var(--border);display:flex;justify-content:space-between;align-items:center;gap:20px;color:var(--muted);font-size:12px}
+.footer-links{display:flex;gap:18px;font-weight:750;color:var(--blue)}
+.footer-links a:hover{text-decoration:underline}
+
+@media(max-width:900px){
+  .sidebar{position:static;width:100%;height:auto;border-right:0;border-bottom:1px solid var(--border)}
+  .layout{display:block}.main{margin-left:0;width:100%;padding:28px 16px 50px}
+  .nav{flex-direction:row;overflow-x:auto}.nav a{white-space:nowrap}.nav-label,.side-mini{display:none}.theme-switch{margin:10px 0}
+  .header h2{font-size:42px}.board{grid-template-columns:1fr}.board-list{grid-template-columns:repeat(2,1fr)}
+}
+@media(max-width:560px){.header h2{font-size:34px}.grade-head{align-items:flex-start}.active-badge{font-size:9px}.file-link{width:100%;justify-content:flex-start}.board-list{grid-template-columns:1fr 1fr}.footer{flex-direction:column;align-items:flex-start}}
+</style>
+</head>
+<body>
+<div class="marquee" aria-hidden="true"><div class="marquee-track"><span>Akshadara Adhiyatra • Official Academic Portal</span><span>KILAU Assessment Hub • Excellence & Integrity</span><span>Akshadara Adhiyatra • Official Academic Portal</span><span>KILAU Assessment Hub • Excellence & Integrity</span></div></div>
+
+<div class="layout">
+  <aside class="sidebar">
+    <div class="brand">
+      <div class="brand-mark"><img src="img7.png" alt="Logo KILAU"></div>
+      <div><h1>KILAU</h1><p>Academic Repository</p></div>
+    </div>
+
+    <div class="search-box">
+      <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><circle cx="11" cy="11" r="7"/><path d="M21 21l-4.3-4.3"/></svg>
+      <input id="materialSearch" type="search" placeholder="Cari materi, semester, kelas…" aria-label="Cari materi">
+    </div>
+
+    <nav class="nav">
+      <a href="#beranda" class="active"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M3 11l9-7 9 7"/><path d="M5 10v9h14v-9"/></svg>Beranda</a>
+      <a href="#semua-materi"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M4 19V5a2 2 0 0 1 2-2h9l5 5v11a2 2 0 0 1-2 2H6a2 2 0 0 1-2-2Z"/></svg>Semua Materi</a>
+      <a href="#unggah-materi"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M12 16V4"/><path d="m7 9 5-5 5 5"/><path d="M5 20h14"/></svg>Unggah Materi</a>
+      <a href="#kontributor"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><circle cx="9" cy="7" r="4"/><path d="M1 21v-1a6 6 0 0 1 6-6h4"/><path d="m16 17 2 2 4-4"/></svg>Kontributor</a>
+    </nav>
+
+    <div class="nav-label">Kelas Aktif</div>
+    <nav class="nav">
+      <a href="#kelas-x">Kelas 10</a><a href="#kelas-xi">Kelas 11</a><a href="#kelas-xii">Kelas 12</a>
+    </nav>
+
+    <div class="theme-switch"><span class="theme-label"><svg id="themeIcon" viewBox="0 0 24 24"><path d="M21 12.79A9 9 0 1 1 11.21 3 7 7 0 0 0 21 12.79Z"/></svg><span id="themeText">Dark Mode</span></span><button id="themeToggle" type="button" aria-label="Ganti tema"></button></div>
+
+      <div class="side-mini"><strong>✦ Kontributor Pekan Ini</strong><div>Admin — 8 materi</div><div>Admin — 6 materi</div></div>
+  </aside>
+
+  <main class="main" id="beranda">
+    <div class="page">
+      <header class="header">
+        <div class="eyebrow">Academic Resource Repository</div>
+        <h2>KILAU</h2>
+        <p>Kilas Informasi Akademik Terpadu. Academic resources, structured evaluation rubrics, and semester examination archives across all active grade levels.</p>
+      </header>
+
+      <section id="semua-materi">
+        <h2 class="section-title">Assessment & Study Archives</h2>
+
+        <article class="grade-card searchable" id="kelas-x" data-search="kelas 10 kelas x semester ats aas aat curriculum guide rubrics">
+          <div class="grade-head"><div class="grade-title"><div class="grade-icon"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M2 3h6a4 4 0 0 1 4 4v14a3 3 0 0 0-3-3H2Z"/><path d="M22 3h-6a4 4 0 0 0-4 4v14a3 3 0 0 1 3-3h7Z"/></svg></div><div><h3>Grade X (Kelas 10)</h3><p>Semester archive & curriculum resources</p></div></div><span class="active-badge">Aktif disusun</span></div>
+          <div class="resources">
+            <a class="file-link primary" href="https://drive.google.com/drive/folders/1nVXypVt0hIh72-dO2s0eDrcYnoP25M5w?usp=sharing" target="_blank" rel="noopener noreferrer"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M4 19V5a2 2 0 0 1 2-2h9l5 5v11a2 2 0 0 1-2 2H6a2 2 0 0 1-2-2Z"/></svg>Semester 1 Midterm (ATS)</a>
+            <a class="file-link primary" href="https://drive.google.com/drive/folders/1TCXvcNLPOX8fO9UJ2wXh2UxxekpVT51Q?usp=sharing" target="_blank" rel="noopener noreferrer" data-new-date="2026-08-31"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M4 19V5a2 2 0 0 1 2-2h9l5 5v11a2 2 0 0 1-2 2H6a2 2 0 0 1-2-2Z"/></svg>Semester 1 Final (AAS)</a>
+            <a class="file-link" href="https://drive.google.com/drive/folders/1k3_ECHcQ6TI3ny8DzCJaLHBaDyr30ieb?usp=sharing" target="_blank" rel="noopener noreferrer"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M4 19V5a2 2 0 0 1 2-2h9l5 5v11a2 2 0 0 1-2 2H6a2 2 0 0 1-2-2Z"/></svg>Semester 2 Midterm (ATS)</a>
+            <a class="file-link" href="https://drive.google.com/drive/folders/1K1LJwHyNs_bT7hiKJpL5_hCLsZQysAmN?usp=sharing" target="_blank" rel="noopener noreferrer"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M4 19V5a2 2 0 0 1 2-2h9l5 5v11a2 2 0 0 1-2 2H6a2 2 0 0 1-2-2Z"/></svg>Semester 2 Final (AAT)</a>
+            <a class="file-link" href="#"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M4 19V5a2 2 0 0 1 2-2h9l5 5v11a2 2 0 0 1-2 2H6a2 2 0 0 1-2-2Z"/></svg>Curriculum Guide & Rubrics</a>
+            <div class="updated">Terakhir diperbarui: otomatis mengikuti update materi.</div>
+          </div>
+        </article>
+
+        <article class="grade-card searchable" id="kelas-xi" data-search="kelas 11 kelas xi semester ats aas aat praktikum lab guidelines">
+          <div class="grade-head"><div class="grade-title"><div class="grade-icon"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M2 3h6a4 4 0 0 1 4 4v14a3 3 0 0 0-3-3H2Z"/><path d="M22 3h-6a4 4 0 0 0-4 4v14a3 3 0 0 1 3-3h7Z"/></svg></div><div><h3>Grade XI (Kelas 11)</h3><p>Semester archive & practicum resources</p></div></div><span class="active-badge">Aktif disusun</span></div>
+          <div class="resources">
+            <a class="file-link primary" href="https://drive.google.com/drive/folders/1Uv7UwU4rWedyktKJDx7-ki5JUxJQZ7q3?usp=drive_link" target="_blank" rel="noopener noreferrer"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M4 19V5a2 2 0 0 1 2-2h9l5 5v11a2 2 0 0 1-2 2H6a2 2 0 0 1-2-2Z"/></svg>Semester 1 Midterm (ATS)</a>
+            <a class="file-link primary" href="https://drive.google.com/drive/folders/1k3BIHhQ655ToDGgcWHQjnzKmH0zI-Az9?usp=sharing" target="_blank" rel="noopener noreferrer"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M4 19V5a2 2 0 0 1 2-2h9l5 5v11a2 2 0 0 1-2 2H6a2 2 0 0 1-2-2Z"/></svg>Semester 1 Final (AAS)</a>
+            <a class="file-link" href="https://drive.google.com/drive/folders/1hxXo3qcERz7N5f-uqvxJU3a0A4n76uML?usp=drive_link" target="_blank" rel="noopener noreferrer"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M4 19V5a2 2 0 0 1 2-2h9l5 5v11a2 2 0 0 1-2 2H6a2 2 0 0 1-2-2Z"/></svg>Semester 2 Midterm (ATS)</a>
+            <a class="file-link" href="https://drive.google.com/drive/folders/11LwSpvaeF6GGqzIv9yuKsSJfD2C146NZ?usp=sharing" target="_blank" rel="noopener noreferrer"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M4 19V5a2 2 0 0 1 2-2h9l5 5v11a2 2 0 0 1-2 2H6a2 2 0 0 1-2-2Z"/></svg>Semester 2 Final (AAT)</a>
+            <a class="file-link" href="#"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M4 19V5a2 2 0 0 1 2-2h9l5 5v11a2 2 0 0 1-2 2H6a2 2 0 0 1-2-2Z"/></svg>Practicum & Lab Guidelines</a>
+          </div>
+        </article>
+
+        <article class="grade-card searchable" id="kelas-xii" data-search="kelas 12 kelas xii semester ats aas school examination us college preparation modules">
+          <div class="grade-head"><div class="grade-title"><div class="grade-icon"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M2 3h6a4 4 0 0 1 4 4v14a3 3 0 0 0-3-3H2Z"/><path d="M22 3h-6a4 4 0 0 0-4 4v14a3 3 0 0 1 3-3h7Z"/></svg></div><div><h3>Grade XII (Kelas 12)</h3><p>Final-year archive & preparation modules</p></div></div><span class="active-badge">Aktif disusun</span></div>
+          <div class="resources">
+            <a class="file-link primary" href="#"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M4 19V5a2 2 0 0 1 2-2h9l5 5v11a2 2 0 0 1-2 2H6a2 2 0 0 1-2-2Z"/></svg>Semester 1 Midterm (ATS)</a>
+            <a class="file-link primary" href="#"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M4 19V5a2 2 0 0 1 2-2h9l5 5v11a2 2 0 0 1-2 2H6a2 2 0 0 1-2-2Z"/></svg>Semester 1 Final (AAS)</a>
+            <a class="file-link primary" href="#"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M4 19V5a2 2 0 0 1 2-2h9l5 5v11a2 2 0 0 1-2 2H6a2 2 0 0 1-2-2Z"/></svg>School Examination (US)</a>
+            <a class="file-link" href="#"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M4 19V5a2 2 0 0 1 2-2h9l5 5v11a2 2 0 0 1-2 2H6a2 2 0 0 1-2-2Z"/></svg>College Preparation Modules</a>
+          </div>
+        </article>
+      </section>
+
+      <section class="board" id="kontributor">
+        <div class="board-copy"><div class="eyebrow">✦ Papan Kontributor</div><h3>Berbagi ilmu,<br>naik peringkat.</h3><p>Siswa dengan kontribusi materi terbanyak akan ditampilkan di papan kontributor.</p></div>
+        <div class="board-list"><div class="board-item"><div class="rank">1</div><div class="name">Admin</div><div class="count">32 unggahan</div></div><div class="board-item"><div class="rank">2</div><div class="name">Kilau</div><div class="count">27 unggahan</div></div><div class="board-item"><div class="rank">3</div><div class="name">Keren</div><div class="count">19 unggahan</div></div><div class="board-item"><div class="rank">4</div><div class="name">Banget</div><div class="count">15 unggahan</div></div></div>
+      </section>
+
+      <div id="unggah-materi"></div>
+      <footer class="footer"><span>© 2026 KILAU — Akshadara Adhiyatra. Dibuat oleh & untuk siswa.</span><div class="footer-links"><a href="#unggah-materi">Kirim Materi</a><a href="#">Kritik & Saran</a><a href="#">Grup Diskusi</a></div></footer>
+    </div>
+  </main>
+</div>
+
+<script>
+const themeToggle = document.getElementById('themeToggle');
+const themeText = document.getElementById('themeText');
+const themeIcon = document.getElementById('themeIcon');
+function applyTheme(theme){
+  const dark = theme === 'dark';
+  document.body.classList.toggle('dark-mode', dark);
+  themeText.textContent = dark ? 'Light Mode' : 'Dark Mode';
+  themeIcon.innerHTML = dark ? '<path d=\"M12 3v2M12 19v2M4.22 4.22l1.42 1.42M18.36 18.36l1.42 1.42M3 12h2M19 12h2M4.22 19.78l1.42-1.42M18.36 5.64l1.42-1.42\"/><circle cx=\"12\" cy=\"12\" r=\"4\" fill=\"none\" stroke=\"currentColor\" stroke-width=\"2\"/>' : '<path d=\"M21 12.79A9 9 0 1 1 11.21 3 7 7 0 0 0 21 12.79Z\"/>';
+  localStorage.setItem('kilau-theme', theme);
+}
+applyTheme(localStorage.getItem('kilau-theme') || 'light');
+themeToggle.addEventListener('click', () => applyTheme(document.body.classList.contains('dark-mode') ? 'light' : 'dark'));
+
+const searchInput = document.getElementById('materialSearch');
+const cards = [...document.querySelectorAll('.searchable')];
+searchInput.addEventListener('input', () => {
+  const q = searchInput.value.toLowerCase().trim();
+  cards.forEach(card => {
+    const haystack = (card.dataset.search + ' ' + card.innerText).toLowerCase();
+    card.style.display = !q || haystack.includes(q) ? '' : 'none';
+  });
+});
+
+const TWO_DAYS = 2 * 24 * 60 * 60 * 1000;
+document.querySelectorAll('[data-new-date]').forEach(item => {
+  const date = new Date(item.dataset.newDate + 'T00:00:00');
+  const now = new Date();
+  const age = now - date;
+  if (age >= 0 && age < TWO_DAYS) {
+    const badge = document.createElement('span');
+    badge.className = 'new-badge';
+    badge.textContent = 'BARU';
+    item.appendChild(badge);
+  }
+});
+</script>
+</body>
+</html>

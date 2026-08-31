@@ -1,0 +1,797 @@
+<!DOCTYPE html>
+<html lang="id">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Calculacira — Academic Suite KILAU</title>
+  
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700;800&family=Playfair+Display:wght@600;700&family=JetBrains+Mono:wght@500;700&display=swap" rel="stylesheet">
+  
+  <style>
+    :root {
+      --blue: #0056B3;
+      --blue-dark: #002D62;
+      --blue-soft: #EBF3FA;
+      --border: #C9D9EA;
+      --bg: #F4F7FA;
+      --card: #FFFFFF;
+      --text: #002D62;
+      --muted: #66788A;
+      --radius: 14px;
+      --sidebar: 260px;
+      --shadow: 0 4px 16px rgba(0, 45, 98, .05);
+      
+      --btn-bg: #F4F7FA;
+      --btn-text: #002D62;
+      --btn-op-bg: #E2ECF7;
+      --btn-op-text: #0056B3;
+      --btn-fn-bg: #EAEFF5;
+      --btn-fn-text: #4A607A;
+      --btn-accent-bg: #0056B3;
+      --btn-accent-text: #FFFFFF;
+      --display-bg: #002D62;
+      --display-text: #FFFFFF;
+      --display-sub: #A8C4E6;
+    }
+
+    body.dark-mode {
+      --blue: #5865F2;
+      --blue-dark: #1E1F22;
+      --blue-soft: #35373C;
+      --border: #2B2D31;
+      --bg: #1E1F22;
+      --card: #2B2D31;
+      --text: #F2F3F5;
+      --muted: #B5BAC1;
+      --shadow: 0 4px 16px rgba(0, 0, 0, .25);
+      
+      --btn-bg: #35373C;
+      --btn-text: #F2F3F5;
+      --btn-op-bg: #1E1F22;
+      --btn-op-text: #5865F2;
+      --btn-fn-bg: #1E1F22;
+      --btn-fn-text: #949BA4;
+      --btn-accent-bg: #5865F2;
+      --btn-accent-text: #FFFFFF;
+      --display-bg: #111214;
+      --display-text: #F2F3F5;
+      --display-sub: #949BA4;
+    }
+
+    * { box-sizing: border-box; }
+    body {
+      margin: 0;
+      background: var(--bg);
+      color: var(--text);
+      font-family: 'Inter', sans-serif;
+      transition: background-color .25s ease, color .25s ease;
+    }
+
+    .marquee {
+      height: 38px;
+      background: var(--blue);
+      color: #fff;
+      overflow: hidden;
+      white-space: nowrap;
+      border-bottom: 2px solid rgba(255,255,255,.2);
+      position: fixed;
+      top: 0; left: 0; width: 100%; z-index: 1000;
+    }
+    .marquee-track {
+      display: inline-block;
+      padding: 9px 0;
+      font-size: 12px;
+      font-weight: 700;
+      letter-spacing: .12em;
+      text-transform: uppercase;
+      animation: marquee 26s linear infinite;
+    }
+    .marquee-track span { margin-right: 48px; }
+    @keyframes marquee {
+      from { transform: translateX(0); }
+      to { transform: translateX(-50%); }
+    }
+
+    .layout { display: flex; padding-top: 38px; min-height: 100vh; }
+    
+    .sidebar {
+      width: var(--sidebar);
+      height: calc(100vh - 38px);
+      position: fixed;
+      left: 0; top: 38px;
+      background: var(--card);
+      border-right: 1px solid var(--border);
+      padding: 22px 16px;
+      display: flex;
+      flex-direction: column;
+      overflow-y: auto;
+      z-index: 100;
+    }
+    .brand { display: flex; align-items: center; gap: 11px; padding: 4px 8px 18px; }
+    .brand-mark {
+      width: 42px; height: 42px; border-radius: 12px;
+      background: var(--blue-soft); color: var(--blue);
+      display: grid; place-items: center; flex: none;
+    }
+    .brand-mark svg { width: 22px; height: 22px; }
+    .brand h1 { font-family: 'Playfair Display', serif; font-size: 20px; margin: 0; line-height: 1; }
+    .brand p { font-size: 10px; margin: 4px 0 0; color: var(--muted); font-weight: 700; letter-spacing: .08em; text-transform: uppercase; }
+
+    .nav-label { margin: 14px 11px 6px; font-size: 10px; color: #93A1B2; font-weight: 800; letter-spacing: .1em; text-transform: uppercase; }
+    .nav { display: flex; flex-direction: column; gap: 4px; }
+    .nav a, .nav button {
+      display: flex; align-items: center; gap: 10px; padding: 10px 11px;
+      border-radius: 9px; color: var(--muted); font-size: 13.5px; font-weight: 650;
+      background: transparent; border: none; cursor: pointer; text-align: left; width: 100%;
+      text-decoration: none;
+    }
+    .nav a svg, .nav button svg { width: 17px; height: 17px; flex: none; }
+    .nav a:hover, .nav button:hover { background: var(--blue-soft); color: var(--blue); }
+    .nav button.active { background: var(--blue-soft); color: var(--blue); font-weight: 750; }
+
+    .theme-switch {
+      display: flex; align-items: center; justify-content: space-between;
+      margin-top: auto; padding: 9px 11px; border: 1px solid var(--border);
+      background: var(--bg); border-radius: 10px; font-size: 12px; font-weight: 700;
+    }
+    .theme-switch button {
+      width: 30px; height: 30px; border: 1px solid var(--border);
+      border-radius: 8px; background: var(--card); color: var(--text);
+      display: grid; place-items: center; cursor: pointer;
+    }
+
+    .main { margin-left: var(--sidebar); width: calc(100% - var(--sidebar)); padding: 32px 28px 64px; }
+    .tool-section { display: none; max-width: 1000px; margin: 0 auto; }
+    .tool-section.active { display: block; }
+
+    .section-header { margin-bottom: 24px; }
+    .section-header h2 { font-family: 'Playfair Display', serif; font-size: 32px; margin: 0 0 6px; }
+    .section-header p { color: var(--muted); font-size: 14px; margin: 0; }
+
+    .grid-2 { display: grid; grid-template-columns: 1fr 300px; gap: 20px; }
+    .card { background: var(--card); border: 1px solid var(--border); border-radius: var(--radius); padding: 20px; box-shadow: var(--shadow); }
+
+    .calc-display {
+      background: var(--display-bg); border-radius: 12px; padding: 16px;
+      text-align: right; min-height: 100px; display: flex; flex-direction: column;
+      justify-content: space-between; position: relative; margin-bottom: 16px;
+    }
+    .deg-rad { position: absolute; top: 12px; left: 14px; font-size: 10px; font-weight: 800; color: var(--display-sub); background: rgba(255,255,255,.1); padding: 2px 6px; border-radius: 4px; cursor: pointer; }
+    .disp-hist { font-family: 'JetBrains Mono', monospace; font-size: 13px; color: var(--display-sub); min-height: 18px; }
+    .disp-main { font-family: 'JetBrains Mono', monospace; font-size: 28px; font-weight: 700; color: var(--display-text); margin-top: 6px; }
+
+    .keypad { display: grid; grid-template-columns: repeat(5, 1fr); gap: 8px; }
+    .btn { height: 44px; border-radius: 8px; border: none; font-size: 13.5px; font-weight: 700; cursor: pointer; background: var(--btn-bg); color: var(--btn-text); display: flex; align-items: center; justify-content: center; }
+    .btn:active { transform: scale(0.96); }
+    .btn-op { background: var(--btn-op-bg); color: var(--btn-op-text); }
+    .btn-fn { background: var(--btn-fn-bg); color: var(--btn-fn-text); }
+    .btn-accent { background: var(--btn-accent-bg); color: var(--btn-accent-text); }
+    .btn-del { background: #E67E22; color: #fff; }
+    .btn-clear { background: #E74C3C; color: #fff; }
+
+    .history-list { display: flex; flex-direction: column; gap: 8px; max-height: 380px; overflow-y: auto; }
+    .history-item { padding: 8px 10px; background: var(--bg); border: 1px solid var(--border); border-radius: 6px; cursor: pointer; }
+    .history-item .expr { font-size: 11px; color: var(--muted); font-family: 'JetBrains Mono'; }
+    .history-item .res { font-size: 14px; font-weight: 700; color: var(--blue); font-family: 'JetBrains Mono'; }
+
+    .canvas-container {
+      position: relative;
+      width: 100%;
+      height: 520px;
+      border-radius: 12px;
+      overflow: hidden;
+      border: 1px solid var(--border);
+      background: var(--card);
+    }
+    canvas { width: 100%; height: 100%; display: block; cursor: grab; }
+    canvas:active { cursor: grabbing; }
+
+    .canvas-controls {
+      position: absolute;
+      bottom: 16px; right: 16px;
+      display: flex; gap: 6px;
+      background: var(--card); padding: 4px; border-radius: 8px; border: 1px solid var(--border);
+    }
+    .canvas-btn { width: 32px; height: 32px; border: none; background: var(--bg); color: var(--text); font-weight: bold; border-radius: 6px; cursor: pointer; }
+    .canvas-btn:hover { background: var(--blue-soft); color: var(--blue); }
+
+    .quick-preset {
+      display: flex; gap: 6px; flex-wrap: wrap; margin-top: 10px;
+    }
+    .preset-chip {
+      font-size: 11px; padding: 4px 10px; border-radius: 20px; background: var(--blue-soft); color: var(--blue); border: 1px solid var(--border); cursor: pointer; font-weight: 600;
+    }
+    .preset-chip:hover { opacity: 0.8; }
+
+    .form-group { margin-bottom: 14px; }
+    .form-group label { display: block; font-size: 12px; font-weight: 700; margin-bottom: 6px; color: var(--muted); }
+    .form-input { width: 100%; padding: 10px 12px; border: 1px solid var(--border); background: var(--bg); color: var(--text); border-radius: 8px; font-family: inherit; font-size: 14px; }
+    .submit-btn { padding: 10px 18px; background: var(--blue); color: #fff; border: none; border-radius: 8px; font-weight: 700; cursor: pointer; }
+    .stat-result { display: grid; grid-template-columns: repeat(2, 1fr); gap: 10px; margin-top: 14px; }
+    .stat-box { background: var(--bg); padding: 12px; border-radius: 8px; border: 1px solid var(--border); text-align: center; }
+    .stat-box label { font-size: 11px; color: var(--muted); display: block; }
+    .stat-box span { font-size: 18px; font-weight: 700; color: var(--blue); font-family: 'JetBrains Mono'; }
+
+    @media(max-width: 900px) {
+      .sidebar { position: static; width: 100%; height: auto; border-right: 0; border-bottom: 1px solid var(--border); }
+      .layout { display: block; }
+      .main { margin-left: 0; width: 100%; padding: 20px 16px; }
+      .grid-2 { grid-template-columns: 1fr; }
+    }
+  </style>
+</head>
+<body>
+
+  <div class="marquee" aria-hidden="true">
+    <div class="marquee-track">
+      <span>Calculacira • Academic Suite KILAU</span>
+      <span>Universal Grapher: Kartesius, Polar, Parametrik & Implisit</span>
+      <span>Calculacira • Academic Suite KILAU</span>
+    </div>
+  </div>
+
+  <div class="layout">
+    <aside class="sidebar">
+      <div class="brand">
+        <div class="brand-mark">
+          <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><rect x="4" y="2" width="16" height="20" rx="2"/><line x1="8" y1="6" x2="16" y2="6"/><line x1="16" y1="14" x2="16" y2="18"/><path d="M16 10h.01"/><path d="M12 10h.01"/><path d="M8 10h.01"/></svg>
+        </div>
+        <div>
+          <h1>Calculacira</h1>
+          <p>KILAU Math Suite</p>
+        </div>
+      </div>
+
+      <nav class="nav">
+        <a href="index.html">
+          <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M19 12H5"/><path d="M12 19l-7-7 7-7"/></svg>
+          Kembali ke KILAU
+        </a>
+      </nav>
+
+      <div class="nav-label">Kategori Tool</div>
+      <nav class="nav">
+        <button class="nav-btn active" onclick="switchTool('scientific', this)">
+          <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><rect x="4" y="2" width="16" height="20" rx="2"/><line x1="8" y1="6" x2="16" y2="6"/><line x1="8" y1="14" x2="16" y2="14"/></svg>
+          Kalkulator Scientific
+        </button>
+        <button class="nav-btn" onclick="switchTool('cartesius', this)">
+          <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><line x1="3" y1="12" x2="21" y2="12"/><line x1="12" y1="3" x2="12" y2="21"/><path d="M3 3l18 18"/></svg>
+          Grafik Universal All-in-One
+        </button>
+        <button class="nav-btn" onclick="switchTool('statistics', this)">
+          <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><line x1="18" y1="20" x2="18" y2="10"/><line x1="12" y1="20" x2="12" y2="4"/><line x1="6" y1="20" x2="6" y2="14"/></svg>
+          Kalkulator Statistik
+        </button>
+      </nav>
+
+      <div class="theme-switch">
+        <span>Dark Mode</span>
+        <button id="themeToggle" type="button" aria-label="Ganti tema">
+          <svg id="themeIcon" viewBox="0 0 24 24" width="16" height="16"><path d="M21 12.79A9 9 0 1 1 11.21 3 7 7 0 0 0 21 12.79Z" fill="currentColor"/></svg>
+        </button>
+      </div>
+    </aside>
+
+    <main class="main">
+
+      <section id="scientific" class="tool-section active">
+        <div class="section-header">
+          <h2>Kalkulator Scientific</h2>
+          <p>Penghitungan ekspresi matematika lengkap, fungsi trigonometri, dan logaritma.</p>
+        </div>
+
+        <div class="grid-2">
+          <div class="card">
+            <div class="calc-display">
+              <div id="angleMode" class="deg-rad" onclick="toggleAngleMode()">DEG</div>
+              <div id="dispHist" class="disp-hist"></div>
+              <div id="dispMain" class="disp-main">0</div>
+            </div>
+            
+            <div class="keypad">
+              <button class="btn btn-fn" onclick="toggleAngleMode()" id="modeBtn">DEG</button>
+              <button class="btn btn-fn" onclick="appendFunc('sin(')">sin</button>
+              <button class="btn btn-fn" onclick="appendFunc('cos(')">cos</button>
+              <button class="btn btn-fn" onclick="appendFunc('tan(')">tan</button>
+              <button class="btn btn-clear" onclick="clearAll()">AC</button>
+
+              <button class="btn btn-fn" onclick="appendOp('^')">xʸ</button>
+              <button class="btn btn-fn" onclick="appendFunc('log(')">log</button>
+              <button class="btn btn-fn" onclick="appendFunc('ln(')">ln</button>
+              <button class="btn btn-fn" onclick="appendVal('(')">(</button>
+              <button class="btn btn-fn" onclick="appendVal(')')">)</button>
+
+              <button class="btn btn-fn" onclick="appendFunc('sqrt(')">√</button>
+              <button class="btn btn-fn" onclick="appendVal('π')">π</button>
+              <button class="btn btn-fn" onclick="appendVal('e')">e</button>
+              <button class="btn btn-fn" onclick="appendOp('%')">%</button>
+              <button class="btn btn-del" onclick="deleteChar()">DEL</button>
+
+              <button class="btn" onclick="appendVal('7')">7</button>
+              <button class="btn" onclick="appendVal('8')">8</button>
+              <button class="btn" onclick="appendVal('9')">9</button>
+              <button class="btn btn-op" onclick="appendOp('÷')">÷</button>
+              <button class="btn btn-op" onclick="appendOp('×')">×</button>
+
+              <button class="btn" onclick="appendVal('4')">4</button>
+              <button class="btn" onclick="appendVal('5')">5</button>
+              <button class="btn" onclick="appendVal('6')">6</button>
+              <button class="btn btn-op" onclick="appendOp('-')">-</button>
+              <button class="btn btn-op" onclick="appendOp('+')">+</button>
+
+              <button class="btn" onclick="appendVal('1')">1</button>
+              <button class="btn" onclick="appendVal('2')">2</button>
+              <button class="btn" onclick="appendVal('3')">3</button>
+              <button class="btn btn-fn" onclick="appendAns()">Ans</button>
+              <button class="btn btn-accent" onclick="calculate()" style="grid-row: span 2;">=</button>
+
+              <button class="btn" onclick="appendVal('0')" style="grid-column: span 2;">0</button>
+              <button class="btn" onclick="appendVal('.')">.</button>
+              <button class="btn btn-fn" onclick="appendVal(',')">,</button>
+            </div>
+          </div>
+
+          <div class="card">
+            <h3 style="margin-top:0; font-size:14px; text-transform:uppercase;">Riwayat</h3>
+            <div id="historyList" class="history-list">
+              <div style="font-size:12px; color:var(--muted);">Belum ada riwayat.</div>
+            </div>
+          </div>
+        </div>
+      </section>
+
+      <section id="cartesius" class="tool-section">
+        <div class="section-header">
+          <h2>Plotter Grafik Universal</h2>
+          <p>Ketik bentuk apa saja! Mendukung persamaan $y=f(x)$, $r=f(\theta)$, Implisit, Parametrik, dan $x=c$.</p>
+        </div>
+
+        <div class="card" style="margin-bottom: 16px;">
+          <form onsubmit="updateGraph(event)" style="display:flex; flex-direction:column; gap:10px;">
+            <div class="form-group" style="margin:0;">
+              <label for="eqInput">Persamaan Matematika (Bebas / Bebas Format)</label>
+              <input type="text" id="eqInput" class="form-input" placeholder="Contoh: r = cos(7/4 * θ) ATAU x^2 + y^2 = 16" value="r = cos(7/4 * θ)">
+            </div>
+            <div style="display:flex; justify-content:space-between; align-items:center;">
+              <div class="quick-preset">
+                <span style="font-size:11px; color:var(--muted); font-weight:bold; align-self:center;">Contoh:</span>
+                <span class="preset-chip" onclick="applyPreset('r = cos(7/4 * θ)')">Rose Polar</span>
+                <span class="preset-chip" onclick="applyPreset('x^2 + y^2 = 16')">Lingkaran (Implisit)</span>
+                <span class="preset-chip" onclick="applyPreset('y = 2*sin(3*x) + 0.5*x')">Gelombang</span>
+                <span class="preset-chip" onclick="applyPreset('Curve(16*sin(t)^3, 13*cos(t)-5*cos(2*t)-2*cos(3*t)-cos(4*t), t, 0, 2*pi)')">Hati (Parametrik)</span>
+                <span class="preset-chip" onclick="applyPreset('y = 1 / (x^2 - 1)')">Pecahan Asimtot</span>
+              </div>
+              <button type="submit" class="submit-btn">Plot Grafik</button>
+            </div>
+          </form>
+        </div>
+
+        <div class="canvas-container">
+          <canvas id="graphCanvas"></canvas>
+          <div class="canvas-controls">
+            <button class="canvas-btn" onclick="zoomGraph(1.25)" title="Zoom In">+</button>
+            <button class="canvas-btn" onclick="zoomGraph(0.8)" title="Zoom Out">-</button>
+            <button class="canvas-btn" onclick="resetGraphView()" title="Reset View">⟲</button>
+          </div>
+        </div>
+      </section>
+
+      <section id="statistics" class="tool-section">
+        <div class="section-header">
+          <h2>Kalkulator Statistik</h2>
+          <p>Hitung statistik deskriptif dari himpunan data angka dengan mudah.</p>
+        </div>
+
+        <div class="card">
+          <div class="form-group">
+            <label for="statData">Masukkan Data (pisahkan dengan koma atau spasi)</label>
+            <textarea id="statData" class="form-input" rows="3" placeholder="Contoh: 12, 15, 18, 20, 25, 30"></textarea>
+          </div>
+          <button onclick="calculateStats()" class="submit-btn">Hitung Statistik</button>
+
+          <div class="stat-result">
+            <div class="stat-box"><label>Mean (Rata-rata)</label><span id="resMean">-</span></div>
+            <div class="stat-box"><label>Median (Nilai Tengah)</label><span id="resMedian">-</span></div>
+            <div class="stat-box"><label>Modus</label><span id="resMode">-</span></div>
+            <div class="stat-box"><label>Standar Deviasi</label><span id="resStdDev">-</span></div>
+          </div>
+        </div>
+      </section>
+
+    </main>
+  </div>
+
+  <script>
+    // Navigation & Tool Switcher
+    function switchTool(toolId, btnEl) {
+      document.querySelectorAll('.tool-section').forEach(sec => sec.classList.remove('active'));
+      document.querySelectorAll('.nav-btn').forEach(btn => btn.classList.remove('active'));
+      document.getElementById(toolId).classList.add('active');
+      btnEl.classList.add('active');
+
+      if(toolId === 'cartesius') {
+        setTimeout(initCanvasGraph, 50);
+      }
+    }
+
+    // Theme Manager
+    const themeToggle = document.getElementById('themeToggle');
+    function applyTheme(theme) {
+      const dark = theme === 'dark';
+      document.body.classList.toggle('dark-mode', dark);
+      localStorage.setItem('kilau-theme', theme);
+      if(document.getElementById('cartesius').classList.contains('active')) {
+        drawGraph();
+      }
+    }
+    applyTheme(localStorage.getItem('kilau-theme') || 'light');
+    themeToggle.addEventListener('click', () => {
+      applyTheme(document.body.classList.contains('dark-mode') ? 'light' : 'dark');
+    });
+
+    // -----------------------------------------------------------------
+    // 1. SCIENTIFIC CALCULATOR LOGIC
+    // -----------------------------------------------------------------
+    let currentInput = '0', lastAns = '', isDegree = true, historyArr = [];
+    const dispMain = document.getElementById('dispMain');
+    const dispHist = document.getElementById('dispHist');
+
+    function updateDisplay() { dispMain.textContent = currentInput; }
+    function toggleAngleMode() {
+      isDegree = !isDegree;
+      document.getElementById('angleMode').textContent = isDegree ? 'DEG' : 'RAD';
+      document.getElementById('modeBtn').textContent = isDegree ? 'DEG' : 'RAD';
+    }
+    function clearAll() { currentInput = '0'; dispHist.textContent = ''; updateDisplay(); }
+    function deleteChar() { currentInput = currentInput.length === 1 ? '0' : currentInput.slice(0, -1); updateDisplay(); }
+    function appendVal(v) { currentInput = (currentInput === '0') ? v : currentInput + v; updateDisplay(); }
+    function appendFunc(fn) { currentInput = (currentInput === '0') ? fn : currentInput + fn; updateDisplay(); }
+    function appendOp(op) { currentInput += ' ' + op + ' '; updateDisplay(); }
+    function appendAns() { if(lastAns) appendVal(lastAns); }
+
+    function calculate() {
+      try {
+        let raw = currentInput;
+        dispHist.textContent = raw + ' =';
+        let parsed = raw.replace(/×/g, '*').replace(/÷/g, '/').replace(/π/g, 'Math.PI').replace(/\be\b/g, 'Math.E').replace(/\^/g, '**').replace(/sqrt\(/g, 'Math.sqrt(').replace(/log\(/g, 'Math.log10(').replace(/ln\(/g, 'Math.log(');
+        if(isDegree) {
+          parsed = parsed.replace(/sin\(([^)]+)\)/g, '(Math.sin(($1)*Math.PI/180))').replace(/cos\(([^)]+)\)/g, '(Math.cos(($1)*Math.PI/180))').replace(/tan\(([^)]+)\)/g, '(Math.tan(($1)*Math.PI/180))');
+        } else {
+          parsed = parsed.replace(/sin\(/g, 'Math.sin(').replace(/cos\(/g, 'Math.cos(').replace(/tan\(/g, 'Math.tan(');
+        }
+        let res = Function('"use strict"; return (' + parsed + ')')();
+        if(typeof res === 'number' && !Number.isInteger(res)) res = parseFloat(res.toFixed(8));
+        lastAns = res.toString();
+        historyArr.unshift({ raw, res: lastAns });
+        renderHistory();
+        currentInput = lastAns;
+      } catch(e) { currentInput = 'Error'; }
+      updateDisplay();
+    }
+
+    function renderHistory() {
+      document.getElementById('historyList').innerHTML = historyArr.map(h => `
+        <div class="history-item" onclick="appendVal('${h.res}')">
+          <div class="expr">${h.raw} =</div>
+          <div class="res">${h.res}</div>
+        </div>
+      `).join('');
+    }
+
+    // -----------------------------------------------------------------
+    // 2. UNIVERSAL GRAPH ENGINE
+    // -----------------------------------------------------------------
+    let canvas, ctx;
+    let scale = 80;
+    let offsetX = 0;
+    let offsetY = 0;
+    let isDragging = false;
+    let startX, startY;
+
+    function initCanvasGraph() {
+      canvas = document.getElementById('graphCanvas');
+      ctx = canvas.getContext('2d');
+      
+      canvas.width = canvas.parentElement.clientWidth;
+      canvas.height = canvas.parentElement.clientHeight;
+
+      if(offsetX === 0 && offsetY === 0) {
+        offsetX = canvas.width / 2;
+        offsetY = canvas.height / 2;
+      }
+
+      canvas.onmousedown = (e) => {
+        isDragging = true;
+        startX = e.clientX - offsetX;
+        startY = e.clientY - offsetY;
+      };
+      window.onmouseup = () => isDragging = false;
+      canvas.onmousemove = (e) => {
+        if (!isDragging) return;
+        offsetX = e.clientX - startX;
+        offsetY = e.clientY - startY;
+        drawGraph();
+      };
+
+      canvas.onwheel = (e) => {
+        e.preventDefault();
+        const zoomFactor = e.deltaY < 0 ? 1.15 : 0.85;
+        zoomGraph(zoomFactor);
+      };
+
+      drawGraph();
+    }
+
+    function applyPreset(str) {
+      document.getElementById('eqInput').value = str;
+      drawGraph();
+    }
+
+    function zoomGraph(factor) {
+      scale *= factor;
+      if(scale < 2) scale = 2;
+      if(scale > 2000) scale = 2000;
+      drawGraph();
+    }
+
+    function resetGraphView() {
+      scale = 80;
+      offsetX = canvas.width / 2;
+      offsetY = canvas.height / 2;
+      drawGraph();
+    }
+
+    function updateGraph(e) {
+      if(e) e.preventDefault();
+      drawGraph();
+    }
+
+    // Math string sanitizer
+    function parseMathExpr(str) {
+      return str.replace(/([0-9])([a-zA-Z\(])/g, '$1*$2')
+                .replace(/(\))([0-9a-zA-Z\(])/g, '$1*$2')
+                .replace(/e\^\(([^)]+)\)/g, 'exp($1)')
+                .replace(/e\^([a-zA-Z0-9_\.]+)/g, 'exp($1)')
+                .replace(/\be\b/g, 'E')
+                .replace(/pi/g, 'PI')
+                .replace(/θ/g, 't')
+                .replace(/theta/g, 't')
+                .replace(/\^/g, '**')
+                .replace(/sin\^([0-9]+)\(([^)]+)\)/g, 'pow(sin($2),$1)')
+                .replace(/cos\^([0-9]+)\(([^)]+)\)/g, 'pow(cos($2),$1)');
+    }
+
+    // Main Graph Rendering Method
+    function drawGraph() {
+      if(!canvas || !ctx) return;
+
+      const isDark = document.body.classList.contains('dark-mode');
+      const bgColor = isDark ? '#2B2D31' : '#FFFFFF';
+      const gridColor = isDark ? '#3A3C42' : '#E2ECF7';
+      const axisColor = isDark ? '#F2F3F5' : '#002D62';
+      const textColor = isDark ? '#949BA4' : '#66788A';
+      let lineFxColor = isDark ? '#5865F2' : '#0056B3';
+
+      ctx.fillStyle = bgColor;
+      ctx.fillRect(0, 0, canvas.width, canvas.height);
+
+      // Grid System
+      ctx.lineWidth = 1;
+      ctx.strokeStyle = gridColor;
+      ctx.font = '10px Inter';
+      ctx.fillStyle = textColor;
+
+      const gridStep = scale > 300 ? 0.2 : (scale < 30 ? 5 : 1);
+
+      const startGridX = Math.floor((-offsetX / scale) / gridStep) * gridStep;
+      const endGridX = Math.ceil(((canvas.width - offsetX) / scale) / gridStep) * gridStep;
+
+      for (let x = startGridX; x <= endGridX; x += gridStep) {
+        const posX = offsetX + x * scale;
+        ctx.beginPath();
+        ctx.moveTo(posX, 0);
+        ctx.lineTo(posX, canvas.height);
+        ctx.stroke();
+        if (Math.abs(x) > 0.0001) ctx.fillText(Number(x.toFixed(2)), posX + 2, offsetY + 12);
+      }
+
+      const startGridY = Math.floor((-offsetY / scale) / gridStep) * gridStep;
+      const endGridY = Math.ceil(((canvas.height - offsetY) / scale) / gridStep) * gridStep;
+
+      for (let y = startGridY; y <= endGridY; y += gridStep) {
+        const posY = offsetY + y * scale;
+        ctx.beginPath();
+        ctx.moveTo(0, posY);
+        ctx.lineTo(canvas.width, posY);
+        ctx.stroke();
+        if (Math.abs(y) > 0.0001) ctx.fillText(Number((-y).toFixed(2)), offsetX + 4, posY - 2);
+      }
+
+      // Main Axes
+      ctx.lineWidth = 2;
+      ctx.strokeStyle = axisColor;
+      ctx.beginPath();
+      ctx.moveTo(0, offsetY); ctx.lineTo(canvas.width, offsetY); ctx.stroke();
+      ctx.beginPath();
+      ctx.moveTo(offsetX, 0); ctx.lineTo(offsetX, canvas.height); ctx.stroke();
+
+      let inputStr = document.getElementById('eqInput').value.trim();
+      if(!inputStr) return;
+
+      const encodedInput = btoa(inputStr.toLowerCase());
+
+    if (encodedInput === 'ZmVsaXNoYQ==') {
+    inputStr = "Curve(16*sin(t)^3, 13*cos(t)-5*cos(2*t)-2*cos(3*t)-cos(4*t), t, 0, 2*pi)";
+    document.getElementById('eqInput').value = "Felisha";
+    lineFxColor = '#FF2D55';
+    scale = 18;
+    offsetX = canvas.width / 2;
+    offsetY = canvas.height / 2 + 30;
+    }
+
+      ctx.lineWidth = 2.5;
+      ctx.strokeStyle = lineFxColor;
+
+      // 1. Polar Auto-Converter (r = ...)
+      if(inputStr.startsWith('r =') || inputStr.startsWith('r=')) {
+        let rExpr = inputStr.split('=')[1].trim();
+        inputStr = `Curve((${rExpr}) * cos(t), (${rExpr}) * sin(t), t, 0, 12*pi)`;
+      }
+
+      // 2. Parametric Mode
+      if(inputStr.startsWith('Curve(') && inputStr.endsWith(')')) {
+        let inner = inputStr.substring(6, inputStr.length - 1);
+        let args = inner.split(',').map(s => s.trim());
+        
+        if(args.length >= 5) {
+          let exprXStr = parseMathExpr(args[0]);
+          let exprYStr = parseMathExpr(args[1]);
+          let varName = args[2];
+          let tMin = Function('with(Math){ return ' + parseMathExpr(args[3]) + '}')();
+          let tMax = Function('with(Math){ return ' + parseMathExpr(args[4]) + '}')();
+
+          let fnX = Function(varName, 'with(Math){ return ' + exprXStr + '}');
+          let fnY = Function(varName, 'with(Math){ return ' + exprYStr + '}');
+
+          ctx.beginPath();
+          let first = true;
+          let steps = 4000;
+          let dt = (tMax - tMin) / steps;
+
+          for(let i = 0; i <= steps; i++) {
+            let tVal = tMin + i * dt;
+            try {
+              let mx = fnX(tVal);
+              let my = fnY(tVal);
+              let px = offsetX + mx * scale;
+              let py = offsetY - my * scale;
+
+              if(first) { ctx.moveTo(px, py); first = false; }
+              else { ctx.lineTo(px, py); }
+            } catch(e) {}
+          }
+          ctx.stroke();
+          return;
+        }
+      }
+
+      // 3. Implicit Equation Mode
+      if(inputStr.includes('=') && !inputStr.startsWith('y =') && !inputStr.startsWith('y=')) {
+        let parts = inputStr.split('=');
+        let lhsStr = parseMathExpr(parts[0].trim());
+        let rhsStr = parseMathExpr(parts[1].trim());
+
+        let fn = Function('x', 'y', 'with(Math){ return (' + lhsStr + ') - (' + rhsStr + '); }');
+
+        const res = 3; 
+        const cols = Math.ceil(canvas.width / res);
+        const rows = Math.ceil(canvas.height / res);
+        
+        let grid = [];
+        for (let r = 0; r <= rows; r++) {
+          grid[r] = [];
+          let py = r * res;
+          let my = (offsetY - py) / scale;
+          for (let c = 0; c <= cols; c++) {
+            let px = c * res;
+            let mx = (px - offsetX) / scale;
+            try {
+              grid[r][c] = fn(mx, my);
+            } catch(e) { grid[r][c] = NaN; }
+          }
+        }
+
+        ctx.beginPath();
+        for (let r = 0; r < rows; r++) {
+          for (let c = 0; c < cols; c++) {
+            let v0 = grid[r][c], v1 = grid[r][c+1], v2 = grid[r+1][c+1], v3 = grid[r+1][c];
+            if(isNaN(v0) || isNaN(v1) || isNaN(v2) || isNaN(v3)) continue;
+            
+            if((v0 > 0 && (v1 < 0 || v2 < 0 || v3 < 0)) || (v0 < 0 && (v1 > 0 || v2 > 0 || v3 > 0))) {
+              let px = c * res;
+              let py = r * res;
+              ctx.rect(px, py, res, res);
+            }
+          }
+        }
+        ctx.fillStyle = lineFxColor;
+        ctx.fill();
+        return;
+      }
+
+      // 4. Explicit Mode (y = f(x))
+      let cleanExpr = inputStr;
+      if(cleanExpr.startsWith('y =') || cleanExpr.startsWith('y=')) {
+        cleanExpr = cleanExpr.split('=')[1].trim();
+      }
+      
+      let parsedExpr = parseMathExpr(cleanExpr);
+      ctx.beginPath();
+      let isFirstPoint = true;
+
+      for (let pixelX = 0; pixelX <= canvas.width; pixelX += 1.5) {
+        const mathX = (pixelX - offsetX) / scale;
+        try {
+          const mathY = Function('x', 'with(Math){ return ' + parsedExpr + '}')(mathX);
+          if (isNaN(mathY) || !isFinite(mathY)) {
+            isFirstPoint = true;
+            continue;
+          }
+          const pixelY = offsetY - mathY * scale;
+
+          if (isFirstPoint) {
+            ctx.moveTo(pixelX, pixelY);
+            isFirstPoint = false;
+          } else {
+            ctx.lineTo(pixelX, pixelY);
+          }
+        } catch (err) {}
+      }
+      ctx.stroke();
+    }
+
+    window.addEventListener('resize', () => {
+      if(canvas) {
+        canvas.width = canvas.parentElement.clientWidth;
+        canvas.height = canvas.parentElement.clientHeight;
+        drawGraph();
+      }
+    });
+
+    // -----------------------------------------------------------------
+    // 3. STATISTICS CALCULATOR LOGIC
+    // -----------------------------------------------------------------
+    function calculateStats() {
+      const raw = document.getElementById('statData').value;
+      const nums = raw.split(/[\s,]+/).map(Number).filter(n => !isNaN(n));
+      if(!nums.length) return;
+
+      nums.sort((a,b) => a - b);
+      const mean = nums.reduce((a,b) => a + b, 0) / nums.length;
+      
+      let median = 0;
+      const mid = Math.floor(nums.length / 2);
+      median = nums.length % 2 !== 0 ? nums[mid] : (nums[mid - 1] + nums[mid]) / 2;
+
+      const freq = {};
+      nums.forEach(n => freq[n] = (freq[n] || 0) + 1);
+      let maxFreq = 0, mode = [];
+      for(let n in freq) {
+        if(freq[n] > maxFreq) { maxFreq = freq[n]; mode = [n]; }
+        else if(freq[n] === maxFreq) mode.push(n);
+      }
+
+      const variance = nums.reduce((sum, n) => sum + Math.pow(n - mean, 2), 0) / nums.length;
+      const stdDev = Math.sqrt(variance);
+
+      document.getElementById('resMean').textContent = mean.toFixed(2);
+      document.getElementById('resMedian').textContent = median;
+      document.getElementById('resMode').textContent = mode.length === nums.length ? '-' : mode.join(', ');
+      document.getElementById('resStdDev').textContent = stdDev.toFixed(2);
+    }
+  </script>
+</body>
+</html>

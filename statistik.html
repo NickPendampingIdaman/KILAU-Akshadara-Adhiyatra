@@ -1,0 +1,519 @@
+<!DOCTYPE html>
+<html lang="id">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Calculacira Statistik — Academic Suite KILAU</title>
+  
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700;800&family=Playfair+Display:wght@600;700&family=JetBrains+Mono:wght@500;700&display=swap" rel="stylesheet">
+  
+  <style>
+    /* CSS Variable & Theme KILAU */
+    :root {
+      --blue: #0056B3;
+      --blue-dark: #002D62;
+      --blue-soft: #EBF3FA;
+      --border: #C9D9EA;
+      --bg: #F4F7FA;
+      --card: #FFFFFF;
+      --text: #002D62;
+      --muted: #66788A;
+      --sidebar: 260px;
+    }
+
+    body.dark-mode {
+      --blue: #5865F2;
+      --blue-dark: #1E1F22;
+      --blue-soft: #35373C;
+      --border: #2B2D31;
+      --bg: #1E1F22;
+      --card: #2B2D31;
+      --text: #F2F3F5;
+      --muted: #B5BAC1;
+    }
+
+    * { box-sizing: border-box; }
+    html, body {
+      margin: 0;
+      padding: 0;
+      height: 100%;
+      background: var(--bg);
+      color: var(--text);
+      font-family: 'Inter', sans-serif;
+      transition: background-color .25s ease, color .25s ease;
+    }
+
+    /* Running Text Banner Upper (1 Line) */
+    .marquee {
+      height: 38px;
+      background: var(--blue);
+      color: #fff;
+      overflow: hidden;
+      border-bottom: 2px solid #8BB8E8;
+      position: fixed;
+      top: 0;
+      left: 0;
+      width: 100%;
+      z-index: 1000;
+      display: flex;
+      align-items: center;
+    }
+
+    .marquee-track {
+      display: flex;
+      width: max-content;
+      animation: marquee 25s linear infinite;
+      will-change: transform;
+    }
+
+    .marquee-content {
+      display: flex;
+      align-items: center;
+      white-space: nowrap;
+    }
+
+    .marquee-content span {
+      display: inline-block;
+      font-size: 12px;
+      font-weight: 700;
+      letter-spacing: .12em;
+      text-transform: uppercase;
+      padding: 0 20px;
+    }
+
+    @keyframes marquee {
+      0% { transform: translateX(0); }
+      100% { transform: translateX(-50%); }
+    }
+
+    .layout { display: flex; padding-top: 38px; min-height: 100vh; width: 100vw; }
+    
+    /* Sidebar Styling & Dynamic Collapse State */
+    .sidebar {
+      width: var(--sidebar);
+      height: calc(100vh - 38px);
+      position: fixed;
+      left: 0; top: 38px;
+      background: var(--card);
+      border-right: 1px solid var(--border);
+      padding: 22px 16px;
+      display: flex;
+      flex-direction: column;
+      z-index: 100;
+      transition: transform .3s cubic-bezier(0.4, 0, 0.2, 1);
+    }
+    body.sidebar-collapsed .sidebar {
+      transform: translateX(-100%);
+    }
+
+    .brand { display: flex; align-items: center; gap: 11px; padding: 4px 8px 18px; }
+    .brand-mark {
+      width: 42px; height: 42px; border-radius: 12px;
+      background: var(--blue-soft); color: var(--blue);
+      display: grid; place-items: center; flex: none;
+    }
+    .brand-mark svg { width: 22px; height: 22px; }
+    .brand h1 { font-family: 'Playfair Display', serif; font-size: 20px; margin: 0; line-height: 1; }
+    .brand p { font-size: 10px; margin: 4px 0 0; color: var(--muted); font-weight: 700; letter-spacing: .08em; text-transform: uppercase; }
+
+    .nav-label { margin: 14px 11px 6px; font-size: 10px; color: #93A1B2; font-weight: 800; letter-spacing: .1em; text-transform: uppercase; }
+    .nav { display: flex; flex-direction: column; gap: 4px; }
+    .nav a {
+      display: flex; align-items: center; gap: 10px; padding: 10px 11px;
+      border-radius: 9px; color: var(--muted); font-size: 13.5px; font-weight: 650;
+      background: transparent; border: none; cursor: pointer; text-align: left; width: 100%;
+      text-decoration: none;
+    }
+    .nav a svg { width: 17px; height: 17px; flex: none; }
+    .nav a:hover { background: var(--blue-soft); color: var(--blue); }
+    .nav a.active { background: var(--blue-soft); color: var(--blue); font-weight: 750; }
+
+    .theme-switch {
+      display: flex; align-items: center; justify-content: space-between;
+      margin-top: auto; padding: 9px 11px; border: 1px solid var(--border);
+      background: var(--bg); border-radius: 10px; font-size: 12px; font-weight: 700;
+    }
+    .theme-label { display: flex; align-items: center; gap: 8px; }
+    .theme-label svg { width: 16px; height: 16px; fill: none; stroke: currentColor; stroke-width: 2; }
+    .theme-switch button {
+      width: 30px; height: 30px; border: 1px solid var(--border);
+      border-radius: 8px; background: var(--card); color: var(--text);
+      display: grid; place-items: center; cursor: pointer;
+    }
+
+    /* Main Area Full Space */
+    .main { 
+      margin-left: var(--sidebar); 
+      width: calc(100vw - var(--sidebar)); 
+      min-height: calc(100vh - 38px);
+      padding: 32px;
+      transition: margin-left .3s cubic-bezier(0.4, 0, 0.2, 1), width .3s cubic-bezier(0.4, 0, 0.2, 1);
+      position: relative;
+      overflow-y: auto;
+    }
+    body.sidebar-collapsed .main {
+      margin-left: 0;
+      width: 100vw;
+    }
+
+    /* Floating Toggle Button */
+    .sidebar-toggle {
+      position: absolute;
+      top: 12px;
+      left: 12px;
+      z-index: 500;
+      background: var(--card);
+      color: var(--text);
+      border: 1px solid var(--border);
+      border-radius: 8px;
+      width: 36px;
+      height: 36px;
+      display: grid;
+      place-items: center;
+      cursor: pointer;
+      box-shadow: 0 2px 8px rgba(0,0,0,0.12);
+      transition: background-color .2s ease;
+    }
+    .sidebar-toggle:hover {
+      background: var(--blue-soft);
+      color: var(--blue);
+    }
+
+    /* Container Kalkulator Statistik */
+    .stat-container {
+      max-width: 900px;
+      margin: 30px auto 0;
+      background: var(--card);
+      border: 1px solid var(--border);
+      border-radius: 16px;
+      padding: 28px;
+      box-shadow: 0 4px 20px rgba(0,0,0,0.05);
+    }
+
+    .stat-header h2 {
+      font-family: 'Playfair Display', serif;
+      font-size: 26px;
+      margin: 0 0 6px;
+    }
+    .stat-header p {
+      color: var(--muted);
+      font-size: 14px;
+      margin: 0 0 20px;
+    }
+
+    .input-group {
+      display: flex;
+      flex-direction: column;
+      gap: 8px;
+      margin-bottom: 20px;
+    }
+    .input-group label {
+      font-size: 13px;
+      font-weight: 700;
+    }
+    .input-group textarea {
+      width: 100%;
+      height: 100px;
+      padding: 12px;
+      border-radius: 10px;
+      border: 1px solid var(--border);
+      background: var(--bg);
+      color: var(--text);
+      font-family: 'JetBrains Mono', monospace;
+      font-size: 14px;
+      resize: vertical;
+    }
+    .input-group textarea:focus {
+      outline: 2px solid var(--blue);
+    }
+
+    .btn-calc {
+      background: var(--blue);
+      color: #fff;
+      border: none;
+      padding: 12px 24px;
+      border-radius: 9px;
+      font-weight: 700;
+      font-size: 14px;
+      cursor: pointer;
+      transition: opacity .2s ease;
+    }
+    .btn-calc:hover { opacity: 0.9; }
+
+    /* Hasil Grid */
+    .results-grid {
+      display: grid;
+      grid-template-columns: repeat(auto-fit, minmax(180px, 1fr));
+      gap: 16px;
+      margin-top: 24px;
+    }
+
+    .stat-card {
+      background: var(--bg);
+      border: 1px solid var(--border);
+      border-radius: 12px;
+      padding: 16px;
+    }
+    .stat-card-title {
+      font-size: 11px;
+      font-weight: 800;
+      color: var(--muted);
+      text-transform: uppercase;
+      letter-spacing: .05em;
+    }
+    .stat-card-value {
+      font-family: 'JetBrains Mono', monospace;
+      font-size: 20px;
+      font-weight: 700;
+      color: var(--blue);
+      margin-top: 6px;
+      word-break: break-all;
+    }
+
+    @media(max-width: 900px) {
+      .sidebar { transform: translateX(-100%); }
+      body.sidebar-collapsed .sidebar { transform: translateX(0); }
+      .main { margin-left: 0; width: 100vw; padding: 20px 16px; }
+    }
+  </style>
+</head>
+<body>
+
+  <!-- Announcement Bar / Headline Berjalan (1 Line) -->
+  <div class="marquee" aria-hidden="true">
+    <div class="marquee-track">
+      <div class="marquee-content">
+        <span>Akshadara Adhiyatra • Official Academic Portal</span>
+        <span>•</span>
+        <span>KILAU Assessment Hub • Excellence & Integrity</span>
+        <span>•</span>
+        <span>Akshadara Adhiyatra • Official Academic Portal</span>
+        <span>•</span>
+        <span>KILAU Assessment Hub • Excellence & Integrity</span>
+        <span>•</span>
+      </div>
+      <div class="marquee-content">
+        <span>Akshadara Adhiyatra • Official Academic Portal</span>
+        <span>•</span>
+        <span>KILAU Assessment Hub • Excellence & Integrity</span>
+        <span>•</span>
+        <span>Akshadara Adhiyatra • Official Academic Portal</span>
+        <span>•</span>
+        <span>KILAU Assessment Hub • Excellence & Integrity</span>
+        <span>•</span>
+      </div>
+    </div>
+  </div>
+
+  <div class="layout">
+    <!-- Sidebar -->
+    <aside class="sidebar">
+      <div class="brand">
+        <div class="brand-mark">
+          <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><rect x="4" y="2" width="16" height="20" rx="2"/><line x1="8" y1="6" x2="16" y2="6"/><line x1="16" y1="14" x2="16" y2="18"/><path d="M16 10h.01"/><path d="M12 10h.01"/><path d="M8 10h.01"/></svg>
+        </div>
+        <div>
+          <h1>Calculacira</h1>
+          <p>KILAU Math Suite</p>
+        </div>
+      </div>
+
+      <nav class="nav">
+        <a href="index.html">
+          <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M19 12H5"/><path d="M12 19l-7-7 7-7"/></svg>
+          Kembali ke KILAU
+        </a>
+      </nav>
+
+      <div class="nav-label">Kategori Tool</div>
+      <nav class="nav">
+        <a href="calculacira.html">
+          <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><rect x="4" y="2" width="16" height="20" rx="2"/><line x1="8" y1="6" x2="16" y2="6"/><line x1="8" y1="14" x2="14" y2="14"/></svg>
+          Kalkulator Scientific (Desmos)
+        </a>
+        <a href="geogebra.html">
+          <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><line x1="3" y1="12" x2="21" y2="12"/><line x1="12" y1="3" x2="12" y2="21"/><path d="M3 3l18 18"/></svg>
+          Grafik Kartesius (GeoGebra)
+        </a>
+        <!-- Halaman Aktif Saat Ini -->
+        <a href="statistik.html" class="active">
+          <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M18 20V10"/><path d="M12 20V4"/><path d="M6 20v-6"/></svg>
+          Kalkulator Statistik
+        </a>
+      </nav>
+
+      <div class="theme-switch">
+        <span class="theme-label">
+          <svg id="themeIcon" viewBox="0 0 24 24"><path d="M21 12.79A9 9 0 1 1 11.21 3 7 7 0 0 0 21 12.79Z"/></svg>
+          <span id="themeText">Dark Mode</span>
+        </span>
+        <button id="themeToggle" type="button" aria-label="Ganti tema"></button>
+      </div>
+    </aside>
+
+    <!-- Main Content -->
+    <main class="main">
+      <!-- Floating Button Toggle Sidebar -->
+      <button class="sidebar-toggle" id="sidebarToggleBtn" title="Sembunyikan/Tampilkan Sidebar" onclick="toggleSidebar()">
+        <svg viewBox="0 0 24 24" width="20" height="20" fill="none" stroke="currentColor" stroke-width="2"><line x1="3" y1="12" x2="21" y2="12"/><line x1="3" y1="6" x2="21" y2="6"/><line x1="3" y1="18" x2="21" y2="18"/></svg>
+      </button>
+
+      <!-- Section Kalkulator Statistik -->
+      <section class="stat-container">
+        <div class="stat-header">
+          <h2>Kalkulator Statistik Deskriptif</h2>
+          <p>Masukkan sekumpulan data angka yang dipisahkan oleh koma atau spasi untuk menghitung indikator statistik lengkap.</p>
+        </div>
+
+        <div class="input-group">
+          <label for="dataInput">Input Data Angka:</label>
+          <textarea id="dataInput" placeholder="Contoh: 12, 15, 18, 22, 25, 25, 30, 34"></textarea>
+        </div>
+
+        <button class="btn-calc" onclick="calculateStats()">Hitung Statistik</button>
+
+        <div class="results-grid">
+          <div class="stat-card">
+            <div class="stat-card-title">Jumlah Data (n)</div>
+            <div class="stat-card-value" id="valN">-</div>
+          </div>
+          <div class="stat-card">
+            <div class="stat-card-title">Mean (Rata-rata)</div>
+            <div class="stat-card-value" id="valMean">-</div>
+          </div>
+          <div class="stat-card">
+            <div class="stat-card-title">Median (Q2)</div>
+            <div class="stat-card-value" id="valMedian">-</div>
+          </div>
+          <div class="stat-card">
+            <div class="stat-card-title">Modus</div>
+            <div class="stat-card-value" id="valMode">-</div>
+          </div>
+          <div class="stat-card">
+            <div class="stat-card-title">Standar Deviasi (s)</div>
+            <div class="stat-card-value" id="valStdDev">-</div>
+          </div>
+          <div class="stat-card">
+            <div class="stat-card-title">Varians (s²)</div>
+            <div class="stat-card-value" id="valVariance">-</div>
+          </div>
+          <div class="stat-card">
+            <div class="stat-card-title">Kuartil Bawah (Q1)</div>
+            <div class="stat-card-value" id="valQ1">-</div>
+          </div>
+          <div class="stat-card">
+            <div class="stat-card-title">Kuartil Atas (Q3)</div>
+            <div class="stat-card-value" id="valQ3">-</div>
+          </div>
+          <div class="stat-card">
+            <div class="stat-card-title">Minimum / Maksimum</div>
+            <div class="stat-card-value" id="valMinMax">-</div>
+          </div>
+          <div class="stat-card">
+            <div class="stat-card-title">Rentang (Range)</div>
+            <div class="stat-card-value" id="valRange">-</div>
+          </div>
+        </div>
+      </section>
+    </main>
+  </div>
+
+  <script>
+    // Toggle Collapse Sidebar
+    function toggleSidebar() {
+      document.body.classList.toggle('sidebar-collapsed');
+    }
+
+    // Theme Switcher Sync KILAU
+    const themeToggle = document.getElementById('themeToggle');
+    const themeText = document.getElementById('themeText');
+    const themeIcon = document.getElementById('themeIcon');
+
+    function applyTheme(theme) {
+      const dark = theme === 'dark';
+      document.body.classList.toggle('dark-mode', dark);
+      themeText.textContent = dark ? 'Light Mode' : 'Dark Mode';
+      themeIcon.innerHTML = dark 
+        ? '<path d="M12 3v2M12 19v2M4.22 4.22l1.42 1.42M18.36 18.36l1.42 1.42M3 12h2M19 12h2M4.22 19.78l1.42-1.42M18.36 5.64l1.42-1.42"/><circle cx="12" cy="12" r="4" fill="none" stroke="currentColor" stroke-width="2"/>' 
+        : '<path d="M21 12.79A9 9 0 1 1 11.21 3 7 7 0 0 0 21 12.79Z"/>';
+      localStorage.setItem('kilau-theme', theme);
+    }
+
+    applyTheme(localStorage.getItem('kilau-theme') || 'light');
+    themeToggle.addEventListener('click', () => {
+      applyTheme(document.body.classList.contains('dark-mode') ? 'light' : 'dark');
+    });
+
+    // Logika Perhitungan Statistik
+    function calculateStats() {
+      const rawText = document.getElementById('dataInput').value;
+      const numbers = rawText
+        .split(/[\s,]+/)
+        .map(Number)
+        .filter(n => !isNaN(n) && n !== null && n !== 0 || n === 0)
+        .sort((a, b) => a - b);
+
+      if (numbers.length === 0) {
+        alert("Masukkan minimal satu angka yang valid.");
+        return;
+      }
+
+      const n = numbers.length;
+      const sum = numbers.reduce((acc, curr) => acc + curr, 0);
+      const mean = sum / n;
+
+      // Median & Kuartil Helper
+      const getPercentile = (arr, q) => {
+        const pos = (arr.length - 1) * q;
+        const base = Math.floor(pos);
+        const rest = pos - base;
+        if (arr[base + 1] !== undefined) {
+          return arr[base] + rest * (arr[base + 1] - arr[base]);
+        } else {
+          return arr[base];
+        }
+      };
+
+      const median = getPercentile(numbers, 0.5);
+      const q1 = getPercentile(numbers, 0.25);
+      const q3 = getPercentile(numbers, 0.75);
+
+      // Modus
+      const freq = {};
+      let maxFreq = 0;
+      numbers.forEach(num => {
+        freq[num] = (freq[num] || 0) + 1;
+        if (freq[num] > maxFreq) maxFreq = freq[num];
+      });
+
+      let modes = [];
+      if (maxFreq > 1) {
+        modes = Object.keys(freq).filter(key => freq[key] === maxFreq);
+      }
+
+      // Varians & Standar Deviasi
+      const variance = n > 1 
+        ? numbers.reduce((acc, curr) => acc + Math.pow(curr - mean, 2), 0) / (n - 1) 
+        : 0;
+      const stdDev = Math.sqrt(variance);
+
+      const min = numbers[0];
+      const max = numbers[n - 1];
+
+      // Update Tampilan Hasil
+      document.getElementById('valN').textContent = n;
+      document.getElementById('valMean').textContent = Number(mean.toFixed(4));
+      document.getElementById('valMedian').textContent = Number(median.toFixed(4));
+      document.getElementById('valMode').textContent = modes.length > 0 ? modes.join(', ') : 'Tidak ada';
+      document.getElementById('valStdDev').textContent = Number(stdDev.toFixed(4));
+      document.getElementById('valVariance').textContent = Number(variance.toFixed(4));
+      document.getElementById('valQ1').textContent = Number(q1.toFixed(4));
+      document.getElementById('valQ3').textContent = Number(q3.toFixed(4));
+      document.getElementById('valMinMax').textContent = `${min} / ${max}`;
+      document.getElementById('valRange').textContent = max - min;
+    }
+  </script>
+</body>
+</html>

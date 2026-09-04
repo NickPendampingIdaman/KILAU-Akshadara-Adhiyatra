@@ -1,1 +1,487 @@
+<!DOCTYPE html>
+<html lang="id">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>KILAU — Info Lomba</title>
 
+  <!-- Fonts -->
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700;800&family=Playfair+Display:wght@600;700&display=swap" rel="stylesheet">
+
+  <style>
+    :root {
+      --blue: #0056B3;
+      --blue-dark: #002D62;
+      --blue-soft: #EBF3FA;
+      --border: #C9D9EA;
+      --bg: #F4F7FA;
+      --card: #FFFFFF;
+      --text: #002D62;
+      --muted: #66788A;
+      --green: #2E8B57;
+      --green-soft: #E7F6EC;
+      --gold: #E3A23B;
+      --gold-soft: #FFF2D8;
+      --input-bg: #F4F7FA;
+      --hover: #F7FAFD;
+      --shadow: 0 4px 16px rgba(0, 45, 98, .05);
+      --board-bg: #002D62;
+      --board-text: #FFFFFF;
+      --board-muted: #C6D5E7;
+      --board-item: rgba(255, 255, 255, .07);
+      --board-border: rgba(255, 255, 255, .12);
+      --radius: 14px;
+      --sidebar: 260px;
+    }
+
+    body.dark-mode {
+      --blue: #5865F2;
+      --blue-dark: #1E1F22;
+      --blue-soft: #35373C;
+      --border: #1E1F22;
+      --bg: #313338;
+      --card: #2B2D31;
+      --text: #F2F3F5;
+      --muted: #B5BAC1;
+      --green: #57F287;
+      --green-soft: #193B2A;
+      --gold: #F3BC5F;
+      --gold-soft: #3B3020;
+      --input-bg: #232428;
+      --hover: #35373C;
+      --shadow: 0 4px 16px rgba(0, 0, 0, .25);
+      --board-bg: #1E1F22;
+      --board-text: #F2F3F5;
+      --board-muted: #B5BAC1;
+      --board-item: rgba(255, 255, 255, .06);
+      --board-border: rgba(255, 255, 255, .12);
+    }
+
+    * { box-sizing: border-box; }
+    html { scroll-behavior: smooth; }
+    body {
+      margin: 0;
+      background: var(--bg);
+      color: var(--text);
+      font-family: 'Inter', sans-serif;
+      -webkit-font-smoothing: antialiased;
+      transition: background-color .25s ease, color .25s ease;
+    }
+    a { text-decoration: none; color: inherit; }
+    button, input { font: inherit; }
+
+    /* Top Marquee Bar */
+    .marquee {
+      height: 38px;
+      background: var(--blue);
+      color: #fff;
+      overflow: hidden;
+      border-bottom: 2px solid #8BB8E8;
+      position: fixed;
+      top: 0;
+      left: 0;
+      width: 100%;
+      z-index: 1000;
+      display: flex;
+      align-items: center;
+    }
+    .marquee-track {
+      display: flex;
+      width: max-content;
+      animation: marquee 25s linear infinite;
+      will-change: transform;
+    }
+    .marquee-content {
+      display: flex;
+      align-items: center;
+      white-space: nowrap;
+    }
+    .marquee-content span {
+      display: inline-block;
+      font-size: 12px;
+      font-weight: 700;
+      letter-spacing: .12em;
+      text-transform: uppercase;
+      padding: 0 20px;
+    }
+    @keyframes marquee {
+      0% { transform: translateX(0); }
+      100% { transform: translateX(-50%); }
+    }
+
+    /* Main Layout & Sidebar */
+    .layout { display: flex; padding-top: 38px; min-height: 100vh; }
+    .sidebar {
+      width: var(--sidebar);
+      height: calc(100vh - 38px);
+      position: fixed;
+      left: 0;
+      top: 38px;
+      background: var(--card);
+      border-right: 1px solid var(--border);
+      padding: 22px 16px;
+      display: flex;
+      flex-direction: column;
+      overflow-y: auto;
+      z-index: 100;
+    }
+
+    .brand {
+      display: flex;
+      align-items: center;
+      gap: 12px;
+      padding: 4px 8px 22px;
+      position: relative;
+    }
+    .brand-mark {
+      width: 60px;
+      height: 60px;
+      background: transparent !important;
+      border: none !important;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      overflow: visible !important;
+      flex: none;
+      position: relative;
+    }
+    .brand-mark img {
+      width: 88px !important;
+      height: 88px !important;
+      max-width: none !important;
+      object-fit: contain;
+      position: absolute;
+      top: -16px;
+      left: -12px;
+      filter: drop-shadow(0 4px 8px rgba(0, 0, 0, 0.2));
+    }
+    .brand h1 { font-family: 'Playfair Display', serif; font-size: 22px; line-height: 1; margin: 0; }
+    .brand p { font-size: 10px; margin: 4px 0 0; color: var(--muted); font-weight: 700; letter-spacing: .08em; text-transform: uppercase; }
+
+    .search-box {
+      display: flex;
+      align-items: center;
+      gap: 8px;
+      padding: 10px 11px;
+      border: 1px solid var(--border);
+      background: var(--input-bg);
+      border-radius: 10px;
+      margin: 0 4px 14px;
+    }
+    .search-box:focus-within { border-color: var(--blue); box-shadow: 0 0 0 3px rgba(0, 86, 179, .09); }
+    .search-box svg { width: 16px; height: 16px; color: var(--muted); flex: none; }
+    .search-box input { border: 0; outline: 0; background: transparent; width: 100%; font-size: 13px; color: var(--text); }
+
+    .nav { display: flex; flex-direction: column; gap: 4px; }
+    .nav a {
+      display: flex;
+      align-items: center;
+      gap: 10px;
+      padding: 10px 11px;
+      border-radius: 999px;
+      color: var(--muted);
+      font-size: 14px;
+      font-weight: 650;
+    }
+    .nav a svg { width: 17px; height: 17px; flex: none; }
+    .nav a:hover { background: var(--hover); color: var(--blue); }
+    .nav a.active { background: var(--blue-soft); color: var(--blue); }
+    .nav-label { margin: 18px 11px 7px; font-size: 10px; color: #93A1B2; font-weight: 800; letter-spacing: .1em; text-transform: uppercase; }
+
+    .theme-switch {
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+      gap: 10px;
+      margin: 14px 4px 12px;
+      padding: 9px 11px;
+      border: 1px solid var(--border);
+      background: var(--input-bg);
+      border-radius: 10px;
+      color: var(--text);
+      font-size: 12px;
+      font-weight: 700;
+    }
+    .theme-switch button {
+      width: 32px;
+      height: 32px;
+      border: 1px solid var(--border);
+      border-radius: 9px;
+      background: var(--card);
+      color: var(--text);
+      display: grid;
+      place-items: center;
+      cursor: pointer;
+      transition: .2s ease;
+    }
+    .theme-switch button:hover { background: var(--hover); color: var(--blue); }
+    .theme-switch svg { width: 16px; height: 16px; fill: currentColor; }
+    .theme-label { display: flex; align-items: center; gap: 8px; }
+    .theme-label svg { width: 15px; height: 15px; }
+
+    /* Content Area */
+    .main { margin-left: var(--sidebar); width: calc(100% - var(--sidebar)); padding: 42px 28px 64px; }
+    .page { max-width: 1100px; margin: 0 auto; }
+
+    /* Empty State Container */
+    .empty-state {
+      min-height: 60vh;
+      display: flex;
+      flex-direction: column;
+      align-items: center;
+      justify-content: center;
+      text-align: center;
+      padding: 40px 20px;
+      background: var(--card);
+      border: 1px solid var(--border);
+      border-radius: var(--radius);
+      box-shadow: var(--shadow);
+      margin-top: 20px;
+    }
+    .empty-icon {
+      width: 80px;
+      height: 80px;
+      background: var(--blue-soft);
+      color: var(--blue);
+      border-radius: 50%;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      margin-bottom: 24px;
+    }
+    .empty-icon svg { width: 40px; height: 40px; }
+    .empty-state h2 {
+      font-family: 'Playfair Display', serif;
+      font-size: 32px;
+      margin: 0 0 12px;
+      color: var(--text);
+    }
+    .empty-state p {
+      max-width: 500px;
+      color: var(--muted);
+      font-size: 15px;
+      line-height: 1.6;
+      margin: 0 0 28px;
+    }
+    .btn-back {
+      display: inline-flex;
+      align-items: center;
+      gap: 8px;
+      padding: 12px 24px;
+      border-radius: 999px;
+      background: var(--blue);
+      color: #fff;
+      font-size: 14px;
+      font-weight: 700;
+      transition: .18s ease;
+    }
+    .btn-back:hover { background: var(--blue-dark); transform: translateY(-1px); }
+    .btn-back svg { width: 16px; height: 16px; }
+
+    /* Footer */
+    .footer { margin-top: 42px; padding-top: 22px; border-top: 1px solid var(--border); display: flex; justify-content: space-between; align-items: center; gap: 20px; color: var(--muted); font-size: 12px; }
+    .footer-links { display: flex; gap: 18px; font-weight: 750; color: var(--blue); }
+    .footer-links a:hover { text-decoration: underline; }
+
+    /* Tablet (768px - 1024px) */
+    @media (max-width: 1024px) {
+      :root { --sidebar: 220px; }
+      .main { padding: 32px 20px 48px; }
+    }
+
+    /* Medium Tablet & Small Screen (768px - 900px) */
+    @media (max-width: 900px) {
+      .layout { display: block; }
+      .sidebar {
+        position: relative;
+        top: 0;
+        width: 100%;
+        height: auto;
+        border-right: 0;
+        border-bottom: 1px solid var(--border);
+        padding: 16px;
+      }
+      .main { margin-left: 0; width: 100%; padding: 28px 20px 50px; }
+      .nav {
+        flex-direction: row;
+        overflow-x: auto;
+        padding-bottom: 6px;
+        -webkit-overflow-scrolling: touch;
+        scrollbar-width: none;
+      }
+      .nav::-webkit-scrollbar { display: none; }
+      .nav a {
+        white-space: nowrap;
+        padding: 8px 14px;
+        background: var(--input-bg);
+        border: 1px solid var(--border);
+      }
+      .nav-label { display: none; }
+      .theme-switch { margin: 12px 0 0; }
+    }
+
+    /* Mobile Devices (<= 600px) */
+    @media (max-width: 600px) {
+      .empty-state { padding: 32px 16px; min-height: 50vh; }
+      .empty-state h2 { font-size: 26px; }
+      .empty-state p { font-size: 14px; }
+      .footer { flex-direction: column; align-items: flex-start; gap: 12px; }
+    }
+  </style>
+</head>
+<body>
+
+  <!-- Announcement Bar -->
+  <div class="marquee" aria-hidden="true">
+    <div class="marquee-track">
+      <div class="marquee-content">
+        <span>Akshadara Adhiyatra • Official Academic Portal</span>
+        <span>•</span>
+        <span>KILAU Assessment Hub • Excellence & Integrity</span>
+        <span>•</span>
+        <span>Akshadara Adhiyatra • Official Academic Portal</span>
+        <span>•</span>
+        <span>KILAU Assessment Hub • Excellence & Integrity</span>
+        <span>•</span>
+      </div>
+      <div class="marquee-content">
+        <span>Akshadara Adhiyatra • Official Academic Portal</span>
+        <span>•</span>
+        <span>KILAU Assessment Hub • Excellence & Integrity</span>
+        <span>•</span>
+        <span>Akshadara Adhiyatra • Official Academic Portal</span>
+        <span>•</span>
+        <span>KILAU Assessment Hub • Excellence & Integrity</span>
+        <span>•</span>
+      </div>
+    </div>
+  </div>
+
+  <div class="layout">
+    <!-- Sidebar Navigation -->
+    <aside class="sidebar">
+      <div class="brand">
+        <div class="brand-mark">
+          <img src="img7.png" alt="Logo KILAU">
+        </div>
+        <div>
+          <h1>KILAU</h1>
+          <p>Academic Repository</p>
+        </div>
+      </div>
+
+      <div class="search-box">
+        <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+          <circle cx="11" cy="11" r="7"/><path d="M21 21l-4.3-4.3"/>
+        </svg>
+        <input id="materialSearch" type="search" placeholder="Cari materi, semester, kelas…" aria-label="Cari materi">
+      </div>
+
+      <nav class="nav">
+        <a href="index.html">
+          <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M3 11l9-7 9 7"/><path d="M5 10v9h14v-9"/></svg>
+          Beranda
+        </a>
+
+        <a href="calculacira.html">
+          <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><rect x="4" y="2" width="16" height="20" rx="2"/><line x1="8" y1="6" x2="16" y2="6"/><path d="M8 11h.01M12 11h.01M16 11h.01M8 15h.01M12 15h.01M16 15h.01M8 19h.01M12 19h.01M16 19h.01"/></svg>
+          Calculacira
+        </a>
+
+        <a href="physics-lab.html">
+          <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M4 18h16"/><path d="M6 15 10 9l4 4 4-7"/><circle cx="10" cy="9" r="1.5"/><circle cx="14" cy="13" r="1.5"/></svg>
+          Physics Lab
+        </a>
+
+        <a href="chem-reaction.html">
+          <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><circle cx="8" cy="12" r="3"/><circle cx="16" cy="8" r="2.5"/><circle cx="17" cy="16" r="2.5"/><path d="M10.5 10.5 14 9M10.5 13.5 14.5 15"/></svg>
+          Reaction Lab
+        </a>
+
+        <a href="learning-path.html">
+          <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><circle cx="6" cy="18" r="2"/><circle cx="12" cy="12" r="2"/><circle cx="18" cy="6" r="2"/><path d="m7.5 16.5 3-3M13.5 10.5l3-3"/></svg>
+          Learning Path
+        </a>
+
+        <a href="infolomba.html" class="active">
+          <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M8 3h8v4a4 4 0 0 1-8 0V3Z"/><path d="M6 5H3v2a4 4 0 0 0 4 4M18 5h3v2a4 4 0 0 1-4 4"/><path d="M12 11v4M8 21h8M9 15h6v6H9z"/></svg>
+          Info Lomba
+        </a>
+      </nav>
+
+      <div class="nav-label">Kelas Aktif</div>
+      <nav class="nav">
+        <a href="index.html#kelas-x">Kelas 10</a>
+        <a href="index.html#kelas-xi">Kelas 11</a>
+        <a href="index.html#kelas-xii">Kelas 12</a>
+      </nav>
+
+      <div class="theme-switch">
+        <span class="theme-label">
+          <svg id="themeIcon" viewBox="0 0 24 24"><path d="M21 12.79A9 9 0 1 1 11.21 3 7 7 0 0 0 21 12.79Z"/></svg>
+          <span id="themeText">Dark Mode</span>
+        </span>
+        <button id="themeToggle" type="button" aria-label="Ganti tema"></button>
+      </div>
+    </aside>
+
+    <!-- Main Content -->
+    <main class="main" id="beranda">
+      <div class="page">
+        
+        <div class="empty-state">
+          <div class="empty-icon">
+            <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+              <circle cx="12" cy="12" r="10"/>
+              <line x1="12" y1="8" x2="12" y2="12"/>
+              <line x1="12" y1="16" x2="12.01" y2="16"/>
+            </svg>
+          </div>
+          <h2>Halaman Belum Tersedia</h2>
+          <p>Fitur atau konten informasi lomba saat ini sedang dalam tahap pengembangan. Silakan kembali lagi nanti untuk memperbarui informasi terbaru.</p>
+          <a href="index.html" class="btn-back">
+            <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+              <line x1="19" y1="12" x2="5" y2="12"/>
+              <polyline points="12 19 5 12 12 5"/>
+            </svg>
+            Kembali ke Beranda
+          </a>
+        </div>
+
+        <footer class="footer">
+          <span>© 2026 KILAU — Akshadara Adhiyatra.</span>
+          <div class="footer-links">
+            <a href="#">Kirim Materi</a>
+            <a href="#">Kritik & Saran</a>
+            <a href="#">Grup Diskusi</a>
+          </div>
+        </footer>
+      </div>
+    </main>
+  </div>
+
+  <script>
+    // Theme Switcher Logic
+    const themeToggle = document.getElementById('themeToggle');
+    const themeText = document.getElementById('themeText');
+    const themeIcon = document.getElementById('themeIcon');
+
+    function applyTheme(theme) {
+      const dark = theme === 'dark';
+      document.body.classList.toggle('dark-mode', dark);
+      themeText.textContent = dark ? 'Light Mode' : 'Dark Mode';
+      themeIcon.innerHTML = dark
+        ? '<path d="M12 3v2M12 19v2M4.22 4.22l1.42 1.42M18.36 18.36l1.42 1.42M3 12h2M19 12h2M4.22 19.78l1.42-1.42M18.36 5.64l1.42-1.42"/><circle cx="12" cy="12" r="4" fill="none" stroke="currentColor" stroke-width="2"/>'
+        : '<path d="M21 12.79A9 9 0 1 1 11.21 3 7 7 0 0 0 21 12.79Z"/>';
+      localStorage.setItem('kilau-theme', theme);
+    }
+
+    applyTheme(localStorage.getItem('kilau-theme') || 'light');
+    themeToggle.addEventListener('click', () => {
+      applyTheme(document.body.classList.contains('dark-mode') ? 'light' : 'dark');
+    });
+  </script>
+</body>
+</html>

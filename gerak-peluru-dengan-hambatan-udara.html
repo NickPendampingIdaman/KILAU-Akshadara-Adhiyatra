@@ -1,0 +1,493 @@
+<!DOCTYPE html>
+<html lang="id">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Physics Lab — Academic Suite KILAU</title>
+  
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700;800&family=Playfair+Display:wght@600;700&family=JetBrains+Mono:wght@500;700&display=swap" rel="stylesheet">
+  
+  <style>
+    /* CSS Variable & Theme KILAU */
+    :root {
+      --blue: #0056B3;
+      --blue-dark: #002D62;
+      --blue-soft: #EBF3FA;
+      --border: #C9D9EA;
+      --bg: #F4F7FA;
+      --card: #FFFFFF;
+      --text: #002D62;
+      --muted: #66788A;
+      --sidebar: 280px;
+    }
+
+    body.dark-mode {
+      --blue: #5865F2;
+      --blue-dark: #1E1F22;
+      --blue-soft: #35373C;
+      --border: #2B2D31;
+      --bg: #1E1F22;
+      --card: #2B2D31;
+      --text: #F2F3F5;
+      --muted: #B5BAC1;
+    }
+
+    * { box-sizing: border-box; }
+    html, body {
+      margin: 0;
+      padding: 0;
+      height: 100%;
+      overflow: hidden;
+      background: var(--bg);
+      color: var(--text);
+      font-family: 'Inter', sans-serif;
+      transition: background-color .25s ease, color .25s ease;
+    }
+
+    /* Running Text Banner Upper */
+    .marquee {
+      height: 38px;
+      background: var(--blue);
+      color: #fff;
+      overflow: hidden;
+      border-bottom: 2px solid #8BB8E8;
+      position: fixed;
+      top: 0;
+      left: 0;
+      width: 100%;
+      z-index: 1000;
+      display: flex;
+      align-items: center;
+    }
+
+    .marquee-track {
+      display: flex;
+      width: max-content;
+      animation: marquee 25s linear infinite;
+      will-change: transform;
+    }
+
+    .marquee-content {
+      display: flex;
+      align-items: center;
+      white-space: nowrap;
+    }
+
+    .marquee-content span {
+      display: inline-block;
+      font-size: 12px;
+      font-weight: 700;
+      letter-spacing: .12em;
+      text-transform: uppercase;
+      padding: 0 20px;
+    }
+
+    @keyframes marquee {
+      0% { transform: translateX(0); }
+      100% { transform: translateX(-50%); }
+    }
+
+    .layout { display: flex; padding-top: 38px; height: 100vh; width: 100vw; }
+    
+    /* Sidebar Styling */
+    .sidebar {
+      width: var(--sidebar);
+      height: calc(100vh - 38px);
+      position: fixed;
+      left: 0; 
+      top: 38px;
+      background: var(--card);
+      border-right: 1px solid var(--border);
+      padding: 18px 12px;
+      display: flex;
+      flex-direction: column;
+      z-index: 100;
+    }
+
+    .brand { display: flex; align-items: center; gap: 11px; padding: 4px 8px 14px; flex-shrink: 0; }
+    .brand-mark {
+      width: 42px; height: 42px; border-radius: 12px;
+      background: var(--blue-soft); color: var(--blue);
+      display: grid; place-items: center; flex: none;
+    }
+    .brand-mark svg { width: 22px; height: 22px; }
+    .brand h1 { font-family: 'Playfair Display', serif; font-size: 20px; margin: 0; line-height: 1; }
+    .brand p { font-size: 10px; margin: 4px 0 0; color: var(--muted); font-weight: 700; letter-spacing: .08em; text-transform: uppercase; }
+
+    .sidebar-scroll {
+      flex: 1;
+      overflow-y: auto;
+      padding-right: 4px;
+      margin-bottom: 12px;
+    }
+
+    /* Scrollbar Halus */
+    .sidebar-scroll::-webkit-scrollbar { width: 4px; }
+    .sidebar-scroll::-webkit-scrollbar-thumb { background: var(--border); border-radius: 4px; }
+
+    .nav-label { margin: 14px 8px 6px; font-size: 10px; color: #93A1B2; font-weight: 800; letter-spacing: .1em; text-transform: uppercase; }
+    .nav { display: flex; flex-direction: column; gap: 4px; }
+    .nav a {
+      display: flex; align-items: center; gap: 10px; padding: 9px 11px;
+      border-radius: 10px; color: var(--muted); font-size: 13px; font-weight: 650;
+      background: transparent; border: none; cursor: pointer; text-align: left; width: 100%;
+      text-decoration: none;
+      transition: all .2s ease;
+    }
+    .nav a svg { width: 17px; height: 17px; flex: none; }
+    .nav a:hover { background: var(--blue-soft); color: var(--blue); }
+    .nav a.active { background: var(--blue-soft); color: var(--blue); font-weight: 750; }
+
+    .nav-text { flex: 1; white-space: nowrap; overflow: hidden; text-overflow: ellipsis; }
+
+    /* Badge Bidang Studi */
+    .badge-tag {
+      font-size: 9px;
+      font-weight: 700;
+      padding: 2px 6px;
+      border-radius: 4px;
+      background: var(--blue-soft);
+      color: var(--blue);
+      text-transform: uppercase;
+      white-space: nowrap;
+      flex-shrink: 0;
+    }
+
+    .theme-switch {
+      display: flex; align-items: center; justify-content: space-between;
+      padding: 9px 11px; border: 1px solid var(--border);
+      background: var(--bg); border-radius: 10px; font-size: 12px; font-weight: 700;
+      flex-shrink: 0;
+    }
+    .theme-label { display: flex; align-items: center; gap: 8px; }
+    .theme-label svg { width: 16px; height: 16px; fill: none; stroke: currentColor; stroke-width: 2; }
+    .theme-switch button {
+      width: 30px; height: 30px; border: 1px solid var(--border);
+      border-radius: 8px; background: var(--card); color: var(--text);
+      display: grid; place-items: center; cursor: pointer;
+    }
+
+    /* Main Area */
+    .main { 
+      margin-left: var(--sidebar); 
+      width: calc(100vw - var(--sidebar)); 
+      height: calc(100vh - 38px);
+      padding: 0;
+      position: relative;
+    }
+
+    /* Container utama */
+    .tool-section {
+      position: relative;
+      width: 100%;
+      height: 100%;
+      overflow: hidden;
+    }
+
+    /* iframe */
+    .physics-iframe {
+      width: 100%;
+      height: calc(100% + 60px);
+      border: 0;
+      display: block;
+      transition: filter .3s ease;
+    }
+
+    body.dark-mode .physics-iframe {
+      filter: invert(0.92) hue-rotate(180deg) contrast(1.08);
+    }
+
+    /* Kotak penjelasan menumpuk/menutup bagian bawah iframe */
+    .info-overlay {
+      position: absolute;
+      bottom: 0;
+      left: 0;
+      width: 100%;
+      z-index: 20;
+      padding: 14px 20px;
+      background: var(--card);
+      border-top: 2px solid var(--border);
+      box-shadow: 0 -4px 12px rgba(0, 0, 0, 0.1);
+      transition: background-color .25s ease, color .25s ease, border-color .25s ease;
+    }
+
+    .info-overlay h3 {
+      margin: 0 0 4px 0;
+      font-size: 15px;
+      color: var(--blue);
+    }
+
+    .info-overlay p {
+      margin: 0;
+      font-size: 13px;
+      color: var(--muted);
+      line-height: 1.4;
+    }
+  </style>
+</head>
+<body>
+
+  <!-- Announcement Bar / Headline Berjalan -->
+  <div class="marquee" aria-hidden="true">
+    <div class="marquee-track">
+      <div class="marquee-content">
+        <span>Akshadara Adhiyatra • Official Academic Portal</span>
+        <span>•</span>
+        <span>KILAU Assessment Hub • Excellence & Integrity</span>
+        <span>•</span>
+        <span>Akshadara Adhiyatra • Official Academic Portal</span>
+        <span>•</span>
+        <span>KILAU Assessment Hub • Excellence & Integrity</span>
+        <span>•</span>
+      </div>
+      <div class="marquee-content">
+        <span>Akshadara Adhiyatra • Official Academic Portal</span>
+        <span>•</span>
+        <span>KILAU Assessment Hub • Excellence & Integrity</span>
+        <span>•</span>
+        <span>Akshadara Adhiyatra • Official Academic Portal</span>
+        <span>•</span>
+        <span>KILAU Assessment Hub • Excellence & Integrity</span>
+        <span>•</span>
+      </div>
+    </div>
+  </div>
+
+  <div class="layout">
+    <!-- Sidebar Permanen -->
+    <aside class="sidebar">
+      <div class="brand">
+        <div class="brand-mark">
+          <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M4 18h16"/><path d="M6 15 10 9l4 4 4-7"/><circle cx="10" cy="9" r="1.5"/><circle cx="14" cy="13" r="1.5"/></svg>
+        </div>
+        <div>
+          <h1>Physics Lab</h1>
+          <p>KILAU Physics Suite</p>
+        </div>
+      </div>
+
+      <div class="sidebar-scroll">
+        <nav class="nav">
+          <a href="index.html">
+            <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M19 12H5"/><path d="M12 19l-7-7 7-7"/></svg>
+            <span class="nav-text">Kembali ke Beranda</span>
+          </a>
+        </nav>
+
+        <div class="nav-label">Simulasi Fisika</div>
+        <nav class="nav">
+          
+          <!-- Pengukuran -->
+          <a href="jangka-sorong.html">
+            <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M2 12h20M6 12v-3M10 12v-5M14 12v-3M18 12v-5"/></svg>
+            <span class="nav-text">Jangka Sorong</span>
+            <span class="badge-tag">Pengukuran</span>
+          </a>
+
+          <!-- Gelombang -->
+          <a href="bandul-sederhana.html">
+            <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M12 2v10"/><circle cx="12" cy="16" r="4"/><path d="M4 2h16"/></svg>
+            <span class="nav-text">Bandul Sederhana</span>
+            <span class="badge-tag">Gelombang</span>
+          </a>
+
+          <a href="gelombang-berjalan.html">
+            <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M2 12c2-4 4-4 6 0s4 4 6 0 4-4 6 0"/></svg>
+            <span class="nav-text">Gelombang Berjalan</span>
+            <span class="badge-tag">Gelombang</span>
+          </a>
+
+          <a href="efek-doppler.html">
+            <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><circle cx="6" cy="12" r="3"/><path d="M12 7a8 8 0 0 1 0 10M16 5a12 12 0 0 1 0 14"/></svg>
+            <span class="nav-text">Efek Doppler</span>
+            <span class="badge-tag">Gelombang</span>
+          </a>
+
+          <a href="gelombang-longitudinal.html">
+            <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M3 6v12M6 6v12M12 6v12M15 6v12M21 6v12"/></svg>
+            <span class="nav-text">Gelombang Longitudinal</span>
+            <span class="badge-tag">Gelombang</span>
+          </a>
+
+          <a href="gerak-harmonik-sederhana.html">
+            <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M12 2v6"/><rect x="8" y="8" width="8" height="6" rx="1"/><path d="M12 14c0 3-4 3-4 6s8 3 8 0"/></svg>
+            <span class="nav-text">Gerak Harmonik Sederhana</span>
+            <span class="badge-tag">Gelombang</span>
+          </a>
+
+          <a href="pemantulan-gelombang.html">
+            <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M3 20h18M5 16l7-8M12 8l7 8"/></svg>
+            <span class="nav-text">Pemantulan Gelombang</span>
+            <span class="badge-tag">Gelombang</span>
+          </a>
+
+          <!-- Mekanika -->
+          <a href="gerak-relatif-dua-dimensi-ii.html">
+            <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M3 21h18M3 3v18M7 13l5-5 4 4 5-5"/></svg>
+            <span class="nav-text">Gerak Relatif 2D: II</span>
+            <span class="badge-tag">Mekanika</span>
+          </a>
+
+          <a href="gerak-relatif-dua-dimensi-i.html">
+            <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M3 21h18M3 3v18M6 16l6-8 6 4"/></svg>
+            <span class="nav-text">Gerak Relatif 2D: I</span>
+            <span class="badge-tag">Mekanika</span>
+          </a>
+
+          <a href="gerak-relatif-satu-dimensi.html">
+            <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M5 12h14M15 7l5 5-5 5M9 17l-5-5 5-5"/></svg>
+            <span class="nav-text">Gerak Relatif 1D</span>
+            <span class="badge-tag">Mekanika</span>
+          </a>
+
+          <a href="dinamika-benda-bertumpuk.html">
+            <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><rect x="5" y="14" width="14" height="6" rx="1"/><rect x="8" y="6" width="8" height="8" rx="1"/></svg>
+            <span class="nav-text">Dinamika Benda Bertumpuk</span>
+            <span class="badge-tag">Mekanika</span>
+          </a>
+
+          <a href="tumbukan-partikel.html">
+            <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><circle cx="6" cy="12" r="3"/><circle cx="18" cy="12" r="3"/><path d="M9 12h6"/></svg>
+            <span class="nav-text">Tumbukan Partikel</span>
+            <span class="badge-tag">Mekanika</span>
+          </a>
+
+          <a href="usaha-dan-energi.html">
+            <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M13 2L3 14h9l-1 8 10-12h-9l1-8z"/></svg>
+            <span class="nav-text">Usaha dan Energi</span>
+            <span class="badge-tag">Mekanika</span>
+          </a>
+
+          <a href="kinematika-dua-benda.html">
+            <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><rect x="3" y="14" width="5" height="5"/><rect x="16" y="14" width="5" height="5"/><path d="M8 16h8"/></svg>
+            <span class="nav-text">Kinematika Dua Benda</span>
+            <span class="badge-tag">Mekanika</span>
+          </a>
+
+          <a href="gaya-gesek-statis-kinetik.html">
+            <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M3 21h18"/><rect x="7" y="11" width="8" height="8" rx="1"/><path d="M15 15h5M20 12l3 3-3 3"/></svg>
+            <span class="nav-text">Gaya Gesek Statis & Kinetik</span>
+            <span class="badge-tag">Mekanika</span>
+          </a>
+
+          <a href="vektor.html">
+            <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+              <line x1="3" y1="21" x2="21" y2="21" stroke-dasharray="2 2" opacity="0.5" />
+              <line x1="3" y1="3" x2="3" y2="21" stroke-dasharray="2 2" opacity="0.5" />
+              <line x1="5" y1="19" x2="19" y2="5" stroke-width="2.5" />
+              <polyline points="12 5 19 5 19 12" stroke-width="2.5" />
+              <circle cx="5" cy="19" r="2" fill="currentColor" />
+            </svg>
+            <span class="nav-text">Operasi Vektor</span>
+            <span class="badge-tag">Mekanika</span>
+          </a>
+
+          <a href="gerak-satu-dimensi.html">
+            <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><line x1="3" y1="12" x2="21" y2="12"/><polygon points="18 8 22 12 18 16" fill="currentColor"/></svg>
+            <span class="nav-text">Gerak Satu Dimensi</span>
+            <span class="badge-tag">Mekanika</span>
+          </a>
+
+          <a href="gerak-peluru.html">
+            <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M3 20c4-12 12-12 18 0"/></svg>
+            <span class="nav-text">Gerak Peluru</span>
+            <span class="badge-tag">Mekanika</span>
+          </a>
+
+          <a href="gerak-peluru-dengan-hambatan-udara.html" class="active">
+            <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M3 20c4-12 12-12 18 0"/></svg>
+            <span class="nav-text">Gerak Peluru Dengan Hambatan udara</span>
+            <span class="badge-tag">Mekanika</span>
+          </a>
+
+          <!-- Optik -->
+          <a href="dispersi-cahaya.html">
+            <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><polygon points="12 3 2 21 22 21"/><path d="M2 14h6M14 15l6 2M14 13l6-2"/></svg>
+            <span class="nav-text">Dispersi Cahaya</span>
+            <span class="badge-tag">Optik</span>
+          </a>
+
+          <a href="polarisasi-cahaya.html">
+            <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><rect x="6" y="4" width="12" height="16" rx="2"/><line x1="12" y1="1" x2="12" y2="23"/></svg>
+            <span class="nav-text">Polarisasi Cahaya</span>
+            <span class="badge-tag">Optik</span>
+          </a>
+
+          <!-- Elektromagnetik -->
+          <a href="medan-elektrostatik.html">
+            <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><circle cx="12" cy="12" r="3"/><path d="M12 2v4M12 18v4M2 12h4M18 12h4"/></svg>
+            <span class="nav-text">Medan Elektrostatik</span>
+            <span class="badge-tag">Elektromagnetik</span>
+          </a>
+
+          <a href="tabung-e-m.html">
+            <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><circle cx="12" cy="12" r="8"/><circle cx="12" cy="12" r="3"/></svg>
+            <span class="nav-text">Tabung e/m</span>
+            <span class="badge-tag">Elektromagnetik</span>
+          </a>
+
+          <!-- Fisika Modern -->
+          <a href="kurva-radiasi-benda-hitam.html">
+            <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><circle cx="12" cy="12" r="5"/><path d="M12 1v2M12 21v2M4.22 4.22l1.42 1.42M18.36 18.36l1.42 1.42"/></svg>
+            <span class="nav-text">Kurva Radiasi Benda Hitam</span>
+            <span class="badge-tag">Fisika Modern</span>
+          </a>
+
+        </nav>
+      </div>
+
+      <div class="theme-switch">
+        <span class="theme-label">
+          <svg id="themeIcon" viewBox="0 0 24 24"><path d="M21 12.79A9 9 0 1 1 11.21 3 7 7 0 0 0 21 12.79Z"/></svg>
+          <span id="themeText">Dark Mode</span>
+        </span>
+        <button id="themeToggle" type="button" aria-label="Ganti tema"></button>
+      </div>
+    </aside>
+
+    <!-- Main Content di Samping Sidebar -->
+    <main class="main">
+      <!-- Section Physics Lab -->
+      <section id="physics-lab" class="tool-section">
+        <!-- Iframe Simulasi -->
+        <iframe class="physics-iframe"
+                src="https://lensaphysics.com/embed/simulasi/gerak-peluru-dengan-hambatan-udara"
+                title="Gerak Peluru dengan Hambatan Udara"
+                allow="fullscreen"
+                scrolling="yes">
+        </iframe>
+
+        <!-- Penjelasan yang Menumpuk (Overlay) Bagian Bawah Iframe -->
+        <div class="info-overlay">
+          <h3>Gerak Peluru dengan Hambatan Udara</h3>
+<p>Simulasi ini menampilkan perbandingan lintasan gerak peluru ideal dan gerak peluru terpengaruh gesekan udara. Anda dapat menggeser slider <b>Koefisien Hambatan (k)</b> dan <b>Massa Benda</b> untuk melihat perubahan bentuk lintasan asimetris secara langsung.</p>
+        </div>
+      </section>
+    </main>
+  </div>
+
+  <script>
+    // Theme Switcher Sync KILAU
+    const themeToggle = document.getElementById('themeToggle');
+    const themeText = document.getElementById('themeText');
+    const themeIcon = document.getElementById('themeIcon');
+
+    function applyTheme(theme) {
+      const dark = theme === 'dark';
+      document.body.classList.toggle('dark-mode', dark);
+      themeText.textContent = dark ? 'Light Mode' : 'Dark Mode';
+      themeIcon.innerHTML = dark 
+        ? '<path d="M12 3v2M12 19v2M4.22 4.22l1.42 1.42M18.36 18.36l1.42 1.42M3 12h2M19 12h2M4.22 19.78l1.42-1.42M18.36 5.64l1.42-1.42"/><circle cx="12" cy="12" r="4" fill="none" stroke="currentColor" stroke-width="2"/>' 
+        : '<path d="M21 12.79A9 9 0 1 1 11.21 3 7 7 0 0 0 21 12.79Z"/>';
+      localStorage.setItem('kilau-theme', theme);
+    }
+
+    applyTheme(localStorage.getItem('kilau-theme') || 'light');
+    themeToggle.addEventListener('click', () => {
+      applyTheme(document.body.classList.contains('dark-mode') ? 'light' : 'dark');
+    });
+  </script>
+</body>
+</html>

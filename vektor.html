@@ -1,0 +1,325 @@
+<!DOCTYPE html>
+<html lang="id">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Physics Lab — Academic Suite KILAU</title>
+  
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700;800&family=Playfair+Display:wght@600;700&family=JetBrains+Mono:wght@500;700&display=swap" rel="stylesheet">
+  
+  <style>
+    /* CSS Variable & Theme KILAU */
+    :root {
+      --blue: #0056B3;
+      --blue-dark: #002D62;
+      --blue-soft: #EBF3FA;
+      --border: #C9D9EA;
+      --bg: #F4F7FA;
+      --card: #FFFFFF;
+      --text: #002D62;
+      --muted: #66788A;
+      --sidebar: 260px;
+    }
+
+    body.dark-mode {
+      --blue: #5865F2;
+      --blue-dark: #1E1F22;
+      --blue-soft: #35373C;
+      --border: #2B2D31;
+      --bg: #1E1F22;
+      --card: #2B2D31;
+      --text: #F2F3F5;
+      --muted: #B5BAC1;
+    }
+
+    * { box-sizing: border-box; }
+    html, body {
+      margin: 0;
+      padding: 0;
+      height: 100%;
+      overflow: hidden;
+      background: var(--bg);
+      color: var(--text);
+      font-family: 'Inter', sans-serif;
+      transition: background-color .25s ease, color .25s ease;
+    }
+
+    /* Running Text Banner Upper */
+    .marquee {
+      height: 38px;
+      background: var(--blue);
+      color: #fff;
+      overflow: hidden;
+      border-bottom: 2px solid #8BB8E8;
+      position: fixed;
+      top: 0;
+      left: 0;
+      width: 100%;
+      z-index: 1000;
+      display: flex;
+      align-items: center;
+    }
+
+    .marquee-track {
+      display: flex;
+      width: max-content;
+      animation: marquee 25s linear infinite;
+      will-change: transform;
+    }
+
+    .marquee-content {
+      display: flex;
+      align-items: center;
+      white-space: nowrap;
+    }
+
+    .marquee-content span {
+      display: inline-block;
+      font-size: 12px;
+      font-weight: 700;
+      letter-spacing: .12em;
+      text-transform: uppercase;
+      padding: 0 20px;
+    }
+
+    @keyframes marquee {
+      0% { transform: translateX(0); }
+      100% { transform: translateX(-50%); }
+    }
+
+    .layout { display: flex; padding-top: 38px; height: 100vh; width: 100vw; }
+    
+    /* Sidebar Styling */
+    .sidebar {
+      width: var(--sidebar);
+      height: calc(100vh - 38px);
+      position: fixed;
+      left: 0; 
+      top: 38px;
+      background: var(--card);
+      border-right: 1px solid var(--border);
+      padding: 22px 16px;
+      display: flex;
+      flex-direction: column;
+      z-index: 100;
+    }
+
+    .brand { display: flex; align-items: center; gap: 11px; padding: 4px 8px 18px; }
+    .brand-mark {
+      width: 42px; height: 42px; border-radius: 12px;
+      background: var(--blue-soft); color: var(--blue);
+      display: grid; place-items: center; flex: none;
+    }
+    .brand-mark svg { width: 22px; height: 22px; }
+    .brand h1 { font-family: 'Playfair Display', serif; font-size: 20px; margin: 0; line-height: 1; }
+    .brand p { font-size: 10px; margin: 4px 0 0; color: var(--muted); font-weight: 700; letter-spacing: .08em; text-transform: uppercase; }
+
+    .nav-label { margin: 14px 11px 6px; font-size: 10px; color: #93A1B2; font-weight: 800; letter-spacing: .1em; text-transform: uppercase; }
+    .nav { display: flex; flex-direction: column; gap: 4px; }
+    .nav a {
+      display: flex; align-items: center; gap: 10px; padding: 10px 11px;
+      border-radius: 99px; color: var(--muted); font-size: 13.5px; font-weight: 650;
+      background: transparent; border: none; cursor: pointer; text-align: left; width: 100%;
+      text-decoration: none;
+    }
+    .nav a svg { width: 17px; height: 17px; flex: none; }
+    .nav a:hover { background: var(--blue-soft); color: var(--blue); }
+    .nav a.active { background: var(--blue-soft); color: var(--blue); font-weight: 750; }
+
+    .theme-switch {
+      display: flex; align-items: center; justify-content: space-between;
+      margin-top: auto; padding: 9px 11px; border: 1px solid var(--border);
+      background: var(--bg); border-radius: 10px; font-size: 12px; font-weight: 700;
+    }
+    .theme-label { display: flex; align-items: center; gap: 8px; }
+    .theme-label svg { width: 16px; height: 16px; fill: none; stroke: currentColor; stroke-width: 2; }
+    .theme-switch button {
+      width: 30px; height: 30px; border: 1px solid var(--border);
+      border-radius: 8px; background: var(--card); color: var(--text);
+      display: grid; place-items: center; cursor: pointer;
+    }
+
+    /* Main Area */
+    .main { 
+      margin-left: var(--sidebar); 
+      width: calc(100vw - var(--sidebar)); 
+      height: calc(100vh - 38px);
+      padding: 0;
+      position: relative;
+    }
+
+    /* Container utama */
+    .tool-section {
+      position: relative;
+      width: 100%;
+      height: 100%;
+      overflow: hidden;
+    }
+
+    /* iframe */
+    .physics-iframe {
+      width: 100%;
+      height: calc(100% + 60px);
+      border: 0;
+      display: block;
+      transition: filter .3s ease;
+    }
+
+    body.dark-mode .physics-iframe {
+      filter: invert(0.92) hue-rotate(180deg) contrast(1.08);
+    }
+
+    /* Kotak penjelasan menumpuk/menutup bagian bawah iframe */
+    .info-overlay {
+      position: absolute;
+      bottom: 0;
+      left: 0;
+      width: 100%;
+      z-index: 20;
+      padding: 14px 20px;
+      background: var(--card);
+      border-top: 2px solid var(--border);
+      box-shadow: 0 -4px 12px rgba(0, 0, 0, 0.1);
+      transition: background-color .25s ease, color .25s ease, border-color .25s ease;
+    }
+
+    .info-overlay h3 {
+      margin: 0 0 4px 0;
+      font-size: 15px;
+      color: var(--blue);
+    }
+
+    .info-overlay p {
+      margin: 0;
+      font-size: 13px;
+      color: var(--muted);
+      line-height: 1.4;
+    }
+  </style>
+</head>
+<body>
+
+  <!-- Announcement Bar / Headline Berjalan -->
+  <div class="marquee" aria-hidden="true">
+    <div class="marquee-track">
+      <div class="marquee-content">
+        <span>Akshadara Adhiyatra • Official Academic Portal</span>
+        <span>•</span>
+        <span>KILAU Assessment Hub • Excellence & Integrity</span>
+        <span>•</span>
+        <span>Akshadara Adhiyatra • Official Academic Portal</span>
+        <span>•</span>
+        <span>KILAU Assessment Hub • Excellence & Integrity</span>
+        <span>•</span>
+      </div>
+      <div class="marquee-content">
+        <span>Akshadara Adhiyatra • Official Academic Portal</span>
+        <span>•</span>
+        <span>KILAU Assessment Hub • Excellence & Integrity</span>
+        <span>•</span>
+        <span>Akshadara Adhiyatra • Official Academic Portal</span>
+        <span>•</span>
+        <span>KILAU Assessment Hub • Excellence & Integrity</span>
+        <span>•</span>
+      </div>
+    </div>
+  </div>
+
+  <div class="layout">
+    <!-- Sidebar Permanen -->
+    <aside class="sidebar">
+      <div class="brand">
+        <div class="brand-mark">
+          <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><rect x="4" y="2" width="16" height="20" rx="2"/><line x1="8" y1="6" x2="16" y2="6"/><line x1="16" y1="14" x2="16" y2="18"/><path d="M16 10h.01"/><path d="M12 10h.01"/><path d="M8 10h.01"/></svg>
+        </div>
+        <div>
+          <h1>Physics Lab</h1>
+          <p>KILAU Physics Suite</p>
+        </div>
+      </div>
+
+      <nav class="nav">
+        <a href="index.html">
+          <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M19 12H5"/><path d="M12 19l-7-7 7-7"/></svg>
+          Kembali ke Beranda
+        </a>
+      </nav>
+
+      <div class="nav-label">Kategori Tool</div>
+      <nav class="nav">
+        <!-- Physics Lab -->
+        <a href="physics-lab.html">
+          <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M4 18h16"/><path d="M6 15 10 9l4 4 4-7"/><circle cx="10" cy="9" r="1.5"/><circle cx="14" cy="13" r="1.5"/></svg>
+          Physics Lab
+        </a>
+        <!-- Halaman aktif saat ini (GeoGebra) -->
+        <a href="vektor.html" class="active">
+  <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+    <line x1="3" y1="21" x2="21" y2="21" stroke-dasharray="2 2" opacity="0.5" />
+    <line x1="3" y1="3" x2="3" y2="21" stroke-dasharray="2 2" opacity="0.5" />
+    <line x1="5" y1="19" x2="19" y2="5" stroke-width="2.5" />
+    <polyline points="12 5 19 5 19 12" stroke-width="2.5" />
+    <circle cx="5" cy="19" r="2" fill="currentColor" />
+  </svg>
+  Operasi Vektor
+</a>
+      </nav>
+
+      <div class="theme-switch">
+        <span class="theme-label">
+          <svg id="themeIcon" viewBox="0 0 24 24"><path d="M21 12.79A9 9 0 1 1 11.21 3 7 7 0 0 0 21 12.79Z"/></svg>
+          <span id="themeText">Dark Mode</span>
+        </span>
+        <button id="themeToggle" type="button" aria-label="Ganti tema"></button>
+      </div>
+    </aside>
+
+    <!-- Main Content di Samping Sidebar -->
+    <main class="main">
+      <!-- Section Physics Lab -->
+      <section id="physics-lab" class="tool-section">
+        <!-- Iframe Simulasi -->
+        <iframe class="physics-iframe"
+                src="https://lensaphysics.com/embed/simulasi/operasi-vektor"
+                title="Operasi Vektor"
+                allow="fullscreen"
+                scrolling="no">
+        </iframe>
+
+        <!-- Penjelasan yang Menumpuk (Overlay) Bagian Bawah Iframe -->
+        <div class="info-overlay">
+          <h3>Penjelasan Operasi Vektor</h3>
+          <p>
+            Simulasi ini menampilkan resultan dari dua buah vektor <strong>E₁</strong> dan <strong>E₂</strong>. 
+            Anda dapat menggeser slider sudut apit (α) serta mengatur centang pada mode <em>Penjumlahan</em> atau <em>Pengurangan</em> untuk melihat perubahan komponen kartesian secara langsung.
+          </p>
+        </div>
+      </section>
+    </main>
+  </div>
+
+  <script>
+    // Theme Switcher Sync KILAU
+    const themeToggle = document.getElementById('themeToggle');
+    const themeText = document.getElementById('themeText');
+    const themeIcon = document.getElementById('themeIcon');
+
+    function applyTheme(theme) {
+      const dark = theme === 'dark';
+      document.body.classList.toggle('dark-mode', dark);
+      themeText.textContent = dark ? 'Light Mode' : 'Dark Mode';
+      themeIcon.innerHTML = dark 
+        ? '<path d="M12 3v2M12 19v2M4.22 4.22l1.42 1.42M18.36 18.36l1.42 1.42M3 12h2M19 12h2M4.22 19.78l1.42-1.42M18.36 5.64l1.42-1.42"/><circle cx="12" cy="12" r="4" fill="none" stroke="currentColor" stroke-width="2"/>' 
+        : '<path d="M21 12.79A9 9 0 1 1 11.21 3 7 7 0 0 0 21 12.79Z"/>';
+      localStorage.setItem('kilau-theme', theme);
+    }
+
+    applyTheme(localStorage.getItem('kilau-theme') || 'light');
+    themeToggle.addEventListener('click', () => {
+      applyTheme(document.body.classList.contains('dark-mode') ? 'light' : 'dark');
+    });
+  </script>
+</body>
+</html>
